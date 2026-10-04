@@ -76,3 +76,9 @@
 ## 许可
 
 代码使用 [MIT](LICENSE)；第三方动画、字体和 DLL 保留各自许可，见 [第三方说明](THIRD_PARTY_NOTICES.md)。内置背景随本版本分享，不因此转为代码 MIT 许可。人物及商标相关权利归相应权利人。
+
+## 动画来源与致谢
+
+大肥译的桌面肥鱼动画参考了 **DeepSeek Harness 的 dafeiyu 桌宠插件**，并使用了其所采用的 [dsh-pet](https://github.com/PC2005-cloud/dsh-pet) 动画素材。在此基础上，我们适配了桌面陪伴、翻译状态反馈、摸头与喂食互动，以及左右贴边探头等使用场景。
+
+感谢原项目作者和素材创作者，让这只可爱的肥鱼能够陪伴更多人的阅读与学习。相关素材保留原有版权和许可，详见 [动画素材说明](Assets/Whale/ASSET_LICENSE.md)。本项目为独立开发的非官方工具，与 DeepSeek、DeepSeek Harness 及相关原项目不存在官方隶属或合作关系。
