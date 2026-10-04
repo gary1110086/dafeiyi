@@ -1,5 +1,7 @@
 # 大肥译 🐟
 
+**简体中文** | [English](README.en.md)
+
 陪你读文献、查词和理解公式的 Windows 悬浮翻译工具。选中文字，点击小按钮翻译或解释；也可以选择自动翻译、剪贴板识别或只让肥鱼陪着。
 
 ![大肥译：示例桌面上的阅读浮窗和肥鱼陪伴](docs/images/desktop-companion.png)
