@@ -1,0 +1,14 @@
+title = "DaFeiYi secrets scan"
+
+[extend]
+useDefault = true
+
+[[rules]]
+id = "generic-api-key"
+
+[[rules.allowlists]]
+description = "Only SHA-256 provenance records of the eat_token animation frames"
+condition = "AND"
+paths = ['''(?:^|[\\/])Assets[\\/]Whale[\\/]provenance\.json$''']
+regexTarget = "line"
+regexes = ['''^\s*"eat_token/eat_token_[0-9]+\.webp":\s*"[a-f0-9]{64}",?\s*$''']

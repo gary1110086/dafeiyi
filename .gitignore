@@ -1,0 +1,30 @@
+# Credentials and local user data
+.env
+.env.*
+!.env.example
+settings.json
+settings-*.json
+runtime-settings.json
+history.dat
+terms.dat
+DeepSeekWebProfile/
+backgrounds/
+cookies*.json
+tokens*.json
+*.secret
+*.key
+*.pem
+# Build and local working files
+*.exe
+*.pdb
+*.log
+*.zip
+.vs/
+bin/
+obj/
+work/
+outputs/
+验证报告/
+test-web-profile/
+Thumbs.db
+.DS_Store

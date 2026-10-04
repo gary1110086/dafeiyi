@@ -1,0 +1,149 @@
+{
+  "packages": [
+    {
+      "name": "markdig",
+      "version": "1.4.0",
+      "url": "https://api.nuget.org/v3-flatcontainer/markdig/1.4.0/markdig.1.4.0.nupkg",
+      "sha256": "BDD84353A3F499F989F3111B33ACEEBD9434F8A069CA8B3DA2A065F2230E7BAF"
+    },
+    {
+      "name": "wpfmath",
+      "version": "2.1.0",
+      "url": "https://api.nuget.org/v3-flatcontainer/wpfmath/2.1.0/wpfmath.2.1.0.nupkg",
+      "sha256": "37622FA45D0DD18A312744EED4DA8BF55A7B297606BE87169C2BEDB443EB7BAD"
+    },
+    {
+      "name": "xamlmath.shared",
+      "version": "2.1.0",
+      "url": "https://api.nuget.org/v3-flatcontainer/xamlmath.shared/2.1.0/xamlmath.shared.2.1.0.nupkg",
+      "sha256": "E64A64E7A1827B8186C79A78CAC50CF118A02009341E109A89C02808F5D5BC8F"
+    },
+    {
+      "name": "csharpmath",
+      "version": "0.5.1",
+      "url": "https://api.nuget.org/v3-flatcontainer/csharpmath/0.5.1/csharpmath.0.5.1.nupkg",
+      "sha256": "A8439776A7E6E58D123859850D96E00E72B9527B454D6B5AD2742DBEB29BD22E"
+    },
+    {
+      "name": "csharpmath.editor",
+      "version": "0.5.1",
+      "url": "https://api.nuget.org/v3-flatcontainer/csharpmath.editor/0.5.1/csharpmath.editor.0.5.1.nupkg",
+      "sha256": "DEC8AA512CC6013826A14885C6E15407D828C0C98ECF68D9BE7892309798AF2E"
+    },
+    {
+      "name": "csharpmath.rendering",
+      "version": "0.5.1",
+      "url": "https://api.nuget.org/v3-flatcontainer/csharpmath.rendering/0.5.1/csharpmath.rendering.0.5.1.nupkg",
+      "sha256": "0B0E5DB8365B56F08E2F6D3DB5EEFA822680827DC7BBB471D7CCB6AF286500AC"
+    },
+    {
+      "name": "csharpmath.skiasharp",
+      "version": "0.5.1",
+      "url": "https://api.nuget.org/v3-flatcontainer/csharpmath.skiasharp/0.5.1/csharpmath.skiasharp.0.5.1.nupkg",
+      "sha256": "3EF046FD91FE7D92C33385CEC3B2EEE9F5935BF9A6636F352CC7CFA9F9763B9F"
+    },
+    {
+      "name": "skiasharp",
+      "version": "2.88.9",
+      "url": "https://api.nuget.org/v3-flatcontainer/skiasharp/2.88.9/skiasharp.2.88.9.nupkg",
+      "sha256": "8D9FF89D55D826DAF3F5205FEAC61CFECD05C52ED178860CE24324AE1652FB6E"
+    },
+    {
+      "name": "skiasharp.nativeassets.win32",
+      "version": "2.88.9",
+      "url": "https://api.nuget.org/v3-flatcontainer/skiasharp.nativeassets.win32/2.88.9/skiasharp.nativeassets.win32.2.88.9.nupkg",
+      "sha256": "90FE573391A0C0719F3497DEE13DB23B934866D885EF50DDA74A5DD6F1B957FE"
+    },
+    {
+      "name": "system.memory",
+      "version": "4.6.3",
+      "url": "https://api.nuget.org/v3-flatcontainer/system.memory/4.6.3/system.memory.4.6.3.nupkg",
+      "sha256": "26078AEB758C9AE985E8BF851F973026061DA6A5EB4837204D0C2D2204C72955"
+    },
+    {
+      "name": "system.buffers",
+      "version": "4.6.1",
+      "url": "https://api.nuget.org/v3-flatcontainer/system.buffers/4.6.1/system.buffers.4.6.1.nupkg",
+      "sha256": "B00451E91D016FBEC091AD1E361F3A7015E1D91D4047F7E48A74455B2A673D79"
+    },
+    {
+      "name": "system.numerics.vectors",
+      "version": "4.6.1",
+      "url": "https://api.nuget.org/v3-flatcontainer/system.numerics.vectors/4.6.1/system.numerics.vectors.4.6.1.nupkg",
+      "sha256": "2BC500A86DCB02F2032D6D877F9E2D6E9E4A79080E57239B4198679D4031F2C7"
+    },
+    {
+      "name": "system.runtime.compilerservices.unsafe",
+      "version": "6.1.2",
+      "url": "https://api.nuget.org/v3-flatcontainer/system.runtime.compilerservices.unsafe/6.1.2/system.runtime.compilerservices.unsafe.6.1.2.nupkg",
+      "sha256": "5F6A7F53AF3465F92BEB6DA873EBE0E496206C313313B98BADEE4355A6B25937"
+    }
+  ],
+  "binaries": [
+    {
+      "file": "Libraries\\CSharpMath.dll",
+      "sha256": "C0B59FCB311A14CA314BD2FBBFE3CCF77E411BCF95D77AEA080FD927B11C7737",
+      "bytes": 185344
+    },
+    {
+      "file": "Libraries\\CSharpMath.Editor.dll",
+      "sha256": "A4D5BDD74F04E9FAB27BA6FED1AB6F9F37BEFFFB9515CAB9DC60A50B929864F7",
+      "bytes": 55296
+    },
+    {
+      "file": "Libraries\\CSharpMath.Rendering.dll",
+      "sha256": "FFC4D841623481AF66860D1FE1D1299FCBAF807C8128100133ED0B508686459B",
+      "bytes": 1574912
+    },
+    {
+      "file": "Libraries\\CSharpMath.SkiaSharp.dll",
+      "sha256": "218FDB1E3FA5521E9CEAC81E83A356CAC59C57E2ACE0F72E0D1938E45736D9BD",
+      "bytes": 12800
+    },
+    {
+      "file": "Libraries\\Markdig.dll",
+      "sha256": "F76FD19CF08329F92E9159082ADB31D2B494E02817BC8C8BCEC5B761FF99A77E",
+      "bytes": 513024
+    },
+    {
+      "file": "Libraries\\SkiaSharp.dll",
+      "sha256": "E70C3C876FC7FCB33A35738431076490EAE47D348133BAD0808D6ABF5A716056",
+      "bytes": 806464
+    },
+    {
+      "file": "Libraries\\System.Buffers.dll",
+      "sha256": "2D78D770C9CB997199154AE8C018B9F1D1EFBC86729F7264DDE6DBAD2A12CAC3",
+      "bytes": 23816
+    },
+    {
+      "file": "Libraries\\System.Memory.dll",
+      "sha256": "D5E8E4866F9CFA66F7765660F84B210198893E55335487AFE5EBDA342C0E913D",
+      "bytes": 145200
+    },
+    {
+      "file": "Libraries\\System.Numerics.Vectors.dll",
+      "sha256": "20C2FA81B8C70D651099D762954F285FD4F942E63B2D7217C145DAB8D4B2F4C9",
+      "bytes": 110344
+    },
+    {
+      "file": "Libraries\\System.Runtime.CompilerServices.Unsafe.dll",
+      "sha256": "08CBD7278B66F1E68425A82D4B97181A4130D93E3DD91831407ABA7212CCDACF",
+      "bytes": 19256
+    },
+    {
+      "file": "Libraries\\WpfMath.dll",
+      "sha256": "28669F07EA457A0AB2DE5EEF360C840DB8A339A142EEDE97132FFFCF92E44B35",
+      "bytes": 145408
+    },
+    {
+      "file": "Libraries\\XamlMath.Shared.dll",
+      "sha256": "D8742F4515EA0D87758205CFAEB5B922B0A486D36F6593D15B5B03200302C6E9",
+      "bytes": 296448
+    },
+    {
+      "file": "Libraries\\Native\\libSkiaSharp.dll",
+      "sha256": "9A0D95E8CAAA852C70D085AF6A40A744242172AD9EA3FD6BC7599875A8A1DBCD",
+      "bytes": 9414216
+    }
+  ]
+}
