@@ -3,7 +3,7 @@ $ErrorActionPreference = 'Stop'
 $taskFramework = Join-Path $env:WINDIR 'Microsoft.NET\Framework64\v4.0.30319'
 $taskTarget = if ($OutputDirectory) { [System.IO.Path]::GetFullPath($OutputDirectory) } else { Join-Path $PSScriptRoot '..\轻译' }
 New-Item -ItemType Directory -Force -Path $taskTarget | Out-Null
-$taskReferences = @('System.dll','System.Core.dll','System.Net.Http.dll','System.Web.Extensions.dll','System.Security.dll','System.Drawing.dll','System.Windows.Forms.dll','System.Xaml.dll','WPF\WindowsBase.dll','WPF\PresentationCore.dll','WPF\PresentationFramework.dll','WPF\UIAutomationClient.dll','WPF\UIAutomationTypes.dll') | ForEach-Object { '/reference:' + (Join-Path $taskFramework $_) }
+$taskReferences = @('System.dll','System.Core.dll','System.Net.Http.dll','System.IO.Compression.dll','System.IO.Compression.FileSystem.dll','System.Web.Extensions.dll','System.Security.dll','System.Drawing.dll','System.Windows.Forms.dll','System.Xaml.dll','WPF\WindowsBase.dll','WPF\PresentationCore.dll','WPF\PresentationFramework.dll','WPF\UIAutomationClient.dll','WPF\UIAutomationTypes.dll') | ForEach-Object { '/reference:' + (Join-Path $taskFramework $_) }
 $taskReferences += @('System.Runtime.dll','System.Runtime.WindowsRuntime.dll') | ForEach-Object { '/reference:' + (Join-Path $taskFramework $_) }
 $taskReferences += '/reference:' + (Join-Path $taskFramework 'netstandard.dll')
 $taskReferences += @('Windows.Foundation','Windows.Media','Windows.Graphics','Windows.Globalization','Windows.Storage') | ForEach-Object { '/reference:' + (Join-Path $env:WINDIR ('System32\WinMetadata\' + $_ + '.winmd')) }
@@ -17,6 +17,7 @@ if (-not (Test-Path -LiteralPath $taskIcon)) { & (Join-Path $PSScriptRoot 'make-
 & (Join-Path $taskFramework 'csc.exe') /nologo /target:winexe /platform:x64 /optimize+ /codepage:65001 /win32manifest:$taskManifest /win32icon:$taskIcon /out:$taskExe @taskReferences @taskSources
 if ($LASTEXITCODE -ne 0) { throw '编译失败' }
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'app.config') -Destination ($taskExe + '.config') -Force
+Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'update-install.ps1') -Destination (Join-Path $taskTarget 'update-install.ps1') -Force
 $taskLibraries | ForEach-Object { Copy-Item -LiteralPath $_.FullName -Destination (Join-Path $taskTarget $_.Name) -Force }
 Get-ChildItem -LiteralPath (Join-Path $PSScriptRoot 'Libraries\Native') -Filter '*.dll' | ForEach-Object { Copy-Item -LiteralPath $_.FullName -Destination (Join-Path $taskTarget $_.Name) -Force }
 $taskLicenses=Join-Path $taskTarget 'Libraries'

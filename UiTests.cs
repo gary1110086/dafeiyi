@@ -71,7 +71,7 @@ namespace LightTranslate {
                         Assert(orb.MenuOpen&&Native.Bounds(orb)==before,"click failed or moved orb");
                         var menu=orb.Menu; menu.UpdateLayout(); var bitmap=new RenderTargetBitmap((int)Math.Ceiling(menu.ActualWidth),(int)Math.Ceiling(menu.ActualHeight),96,96,PixelFormats.Pbgra32); bitmap.Render(menu);
                         var encoder=new PngBitmapEncoder(); encoder.Frames.Add(BitmapFrame.Create(bitmap)); using(var stream=File.Create(Path.Combine(folder,"常驻菜单预览.png"))) encoder.Save(stream);
-                        var result=(MenuItem)menu.Items[2]; menu.IsOpen=false; result.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                        MenuItem result=null; foreach(object entry in menu.Items) { var item=entry as MenuItem; if(item!=null&&Convert.ToString(item.Header)=="打开结果窗口") result=item; } Assert(result!=null,"result action absent"); menu.IsOpen=false; result.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
                         Assert(controller.Popup.IsVisible&&controller.Popup.AnswerText.Contains("选中文字")&&controller.RecentResults.Count==0,"result action made a request or lacked empty guidance");
                     } finally { controller.Dismiss(); orb.Suspend(); }
                 });

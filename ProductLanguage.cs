@@ -2,12 +2,34 @@ using System;
 using System.Collections.Generic;
 namespace LightTranslate {
  internal static class ProductLanguage {
-  internal const string Version="1.1.0";
+  internal const string Version="1.1.1";
   internal static string Interface="zh-CN";
   internal static string Output(Settings s) {
    return s.TargetLanguage=="en"?"\nOutput language: English. Translate into English and explain in English. This language choice overrides any other output-language instruction; preserve technical terms and LaTeX.":s.TargetLanguage=="ja"?"\n回答语言：日语。翻译成日语，解释也使用日语。这一语言选择优先于其他输出语言要求；保留专业术语和 LaTeX。":"";
   }
   internal static readonly Dictionary<string,string> English=new Dictionary<string,string> {
+   {"使用模式","Mode"},{"已暂停","Paused"},{"阅读工具","Reading tools"},{"记录与收藏","History & terms"},
+   {"更新与关于","Updates & about"},{"当前版本","Current version"},{"检查更新","Check for updates"},{"保存设置并更新","Save & update"},{"发现新版","New version available"},{"已是最新版本","You're up to date"},{"下载更新","Downloading update"},
+   {"更新程序，保留你的阅读积累。","Update the app and keep your reading history."},
+   {"更新只替换程序。API 配置、官网登录、历史、术语收藏和自选背景继续保留；桌面快捷方式与开机启动也保留。","Updates replace program files only. API settings, website login, history, terms, custom backgrounds, desktop shortcuts and startup preferences remain."},
+   {"点击检查更新。检查只连接公开 GitHub，不发送个人配置。","Check for updates from public GitHub. Personal settings are never sent."},
+   {"暂时无法检查更新。当前版本仍可使用，也可打开下载页。","Could not check for updates. Keep using this version or open the download page."},
+   {"正在下载与校验，完成后会重启应用…","Downloading and verifying. The app will restart when ready…"},
+   {"更新未完成，当前程序与本地数据保留。可重试或打开下载页。","Update did not complete. The current app and local data remain. Retry or open the download page."},
+   {"旧版首次升级：下载新版、完整解压，运行安装脚本即可覆盖更新，无需先卸载。新版以后可在这里完成更新。","First upgrade from an older version: download and extract the new package, then run its installer without uninstalling. Future updates can run here."},
+   {"选中 → 小按钮","Selection → button"},{"选中 → 自动翻译","Selection → auto translate"},{"剪贴板 → 自动翻译","Clipboard → auto translate"},
+   {"识别模式","Mode"},{"仅陪伴","Companion"},{"剪贴板","Clipboard"},{"自动","Automatic"},{"点击","Button"},{"连接","Connection"},{"官网账号","Website account"},
+   {"暂停自动识别","Pause recognition"},{"恢复自动识别","Resume recognition"},{"显示桌面肥鱼","Show desktop whale"},{"退出大肥译","Quit DaFeiYi"},
+   {"单击肥鱼：切换模式与打开功能\n按住拖动：放置肥鱼 · 右键：同一菜单","Click: modes and tools\nHold and drag: move · Right-click: same menu"},
+   {"单击任何部位或右键打开模式与功能；按住拖动放置。互动动作也可从菜单中选择。","Click anywhere or right-click for modes and tools. Hold and drag to move. Play interactions from the menu."},
+   {"浮窗翻译 · 应用内登录","Popup translation · sign in here"},
+   {"在应用内官网登录并返回浮窗，即可划词翻译。账号过期或需要验证时，再打开登录窗口。","Sign in inside this app and return to the popup to translate selections. Reopen this window when your session expires or needs verification."},
+   {"浮窗翻译：在上面的应用内窗口登录 → 检查连接 → 完成登录并返回。关闭账号窗口后登录会保留。","Sign in here → check connection → return to popup. Closing the account window keeps your login."},
+   {"浏览器辅助 · 独立使用","Browser helper · separate session"},{"在 Chrome / 浏览器打开官网","Open website in Chrome / browser"},
+   {"优先打开 Chrome，未安装时使用默认浏览器。这里的登录不会同步到大肥译，适合检查官网是否能正常打开或在浏览器中直接聊天。","Opens Chrome when installed, otherwise your default browser. Its login is separate from DaFeiYi. Use it to check the website or chat directly."},
+   {"已请求打开浏览器；浮窗翻译仍需在应用内登录。","Browser launch requested. Popup translation still needs an in-app login."},
+   {"浏览器未能打开，可手动访问 https://chat.deepseek.com/","Could not open the browser. Visit https://chat.deepseek.com/ manually."},
+   {"这是大肥译的独立官网会话。关闭此窗口保留登录；Chrome 中的登录不会同步到这里。","This is DaFeiYi's own website session. Closing this window keeps it signed in; Chrome sessions are separate."},
    {"大肥译","DaFeiYi"},{"大肥译设置","DaFeiYi settings"},{"读懂一点，陪你久一点","Understand more. Keep a little company."},
    {"连接与模型","Connection"},{"划词与快捷键","Selection & keys"},{"阅读外观","Reading"},{"桌面肥鱼","Companion"},
    {"选择官网账号或 API，随时切换。","Use your website account or API. Switch anytime."},{"决定什么时候出现、什么时候翻译。","Choose when to appear and when to translate."},

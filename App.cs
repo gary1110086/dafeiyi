@@ -14,6 +14,7 @@ namespace LightTranslate {
     public static class Program {
         [STAThread] public static int Main(string[] args) {
             if(args.Length>0 && args[0]=="--self-test") return Tests.Run(args.Length>1?args[1]:"self-test.txt");
+            if(args.Length>0 && args[0]=="--update-test") return UpdateTests.Run(args[1]);
             var app=new Application { ShutdownMode=ShutdownMode.OnExplicitShutdown };
             if(args.Length==0) ProductLanguage.Interface=Settings.Load(Settings.DefaultPath).InterfaceLanguage;
             AppController.RequireIsolatedProfile=args.Length>0;
@@ -123,7 +124,7 @@ namespace LightTranslate {
             Orb.HistoryRequested+=delegate { OpenResult(); Popup.ShowRecent(); }; Orb.TermsRequested+=OpenTerms;
             Orb.SettingsRequested+=OpenSettings;
             Orb.DisableRequested+=delegate { SetResident(false); };
-            Orb.CompanionRequested+=delegate { ChangeMode(settings.Mode=="companion"?"button":"companion"); };
+            Orb.ModeRequested+=delegate(string mode) { ChangeMode(mode); };
             Orb.PositionChanged+=RememberOrbPosition;
             Orb.PreferencesChanged+=delegate { settings.PetSize=Orb.PetSize; settings.ReducedMotion=Orb.ReducedMotion; settings.EdgeHide=Orb.EdgeHide; settings.HideIdleCaption=Orb.HideIdleCaption; SaveQuietly(); };
             Orb.InteractionStarted+=delegate { selectionVersion++; pendingAt=0; policy.Clear(); Chip.Hide(); if(request==null) Orb.SetStatus("idle",IdleCaption,0); };
@@ -146,18 +147,19 @@ namespace LightTranslate {
             trayIcon=Icon.ExtractAssociatedIcon(System.Reflection.Assembly.GetExecutingAssembly().Location);
             tray=new Forms.NotifyIcon { Icon=trayIcon,Text="大肥译 · 点击划词按钮",Visible=true };
             var menu=new Forms.ContextMenuStrip();
-            menu.Items.Add("打开结果窗口",null,delegate { OpenResult(); });
-            var translateClipboard=new Forms.ToolStripMenuItem("翻译剪贴板",null,delegate { Ignore(ClipboardRequest()); }); translateClipboard.ShortcutKeyDisplayString="Ctrl+Alt+V"; menu.Items.Add(translateClipboard);
-            var screenshot=new Forms.ToolStripMenuItem("屏幕识字",null,delegate { Ignore(StartOcr()); }); screenshot.ShortcutKeyDisplayString="Ctrl+Alt+S"; menu.Items.Add(screenshot); menu.Items.Add(new Forms.ToolStripSeparator());
-            menu.Items.Add("历史记录 · 最近 30 条",null,delegate { OpenResult(); Popup.ShowRecent(); });
-            menu.Items.Add("术语收藏",null,delegate { OpenTerms(); });
             buttonItem=new Forms.ToolStripMenuItem("选中 → 小按钮",null,delegate { ChangeMode("button"); });
             autoItem=new Forms.ToolStripMenuItem("选中 → 自动翻译",null,delegate { ChangeMode("auto"); });
             clipboardItem=new Forms.ToolStripMenuItem("剪贴板 → 自动翻译",null,delegate { ChangeMode("clipboard"); });
             companionItem=new Forms.ToolStripMenuItem("仅陪伴 · 关闭划词",null,delegate { ChangeMode("companion"); });
-            menu.Items.Add(new Forms.ToolStripSeparator()); trayMode=new Forms.ToolStripMenuItem("识别模式"); trayMode.DropDownItems.AddRange(new Forms.ToolStripItem[]{buttonItem,autoItem,clipboardItem,companionItem}); menu.Items.Add(trayMode);
+            trayMode=new Forms.ToolStripMenuItem("识别模式"); trayMode.DropDownItems.AddRange(new Forms.ToolStripItem[]{buttonItem,autoItem,clipboardItem,companionItem}); menu.Items.Add(trayMode);
+            pauseItem=new Forms.ToolStripMenuItem("暂停自动识别",null,delegate { settings.Enabled=!settings.Enabled; clipboardWatch.Reset(Native.GetClipboardSequenceNumber()); Dismiss(); SaveQuietly(); UpdateTray(); Orb.ApplyPreferences(settings); }); menu.Items.Add(pauseItem);
+            menu.Items.Add(new Forms.ToolStripSeparator());
+            menu.Items.Add("打开结果窗口",null,delegate { OpenResult(); });
+            var translateClipboard=new Forms.ToolStripMenuItem("翻译剪贴板",null,delegate { Ignore(ClipboardRequest()); }); translateClipboard.ShortcutKeyDisplayString="Ctrl+Alt+V"; menu.Items.Add(translateClipboard);
+            var screenshot=new Forms.ToolStripMenuItem("屏幕识字",null,delegate { Ignore(StartOcr()); }); screenshot.ShortcutKeyDisplayString="Ctrl+Alt+S"; menu.Items.Add(screenshot);
+            var records=new Forms.ToolStripMenuItem("记录与收藏"); records.DropDownItems.Add("历史记录 · 最近 30 条",null,delegate { OpenResult(); Popup.ShowRecent(); }); records.DropDownItems.Add("术语收藏",null,delegate { OpenTerms(); }); menu.Items.Add(records);
+            menu.Items.Add(new Forms.ToolStripSeparator());
             trayService=new Forms.ToolStripMenuItem("连接与模型"); trayService.DropDownItems.Add("DeepSeek API",null,delegate { ChangeService("api",settings.Model,settings.Thinking); }); trayService.DropDownItems.Add("DeepSeek 官网 · 登录账号",null,delegate { ChangeService("web",settings.Model,settings.Thinking); }); trayService.DropDownItems.Add("连接设置…",null,delegate { OpenSettings(); }); menu.Items.Add(trayService);
-            pauseItem=new Forms.ToolStripMenuItem("暂停自动识别",null,delegate { settings.Enabled=!settings.Enabled; clipboardWatch.Reset(Native.GetClipboardSequenceNumber()); Dismiss(); SaveQuietly(); UpdateTray(); }); menu.Items.Add(pauseItem);
             residentItem=new Forms.ToolStripMenuItem("显示桌面肥鱼",null,delegate { SetResident(!settings.ResidentOrb); }); menu.Items.Add(residentItem);
             menu.Items.Add(new Forms.ToolStripSeparator());
             menu.Items.Add("设置…",null,delegate { OpenSettings(); });
@@ -169,9 +171,9 @@ namespace LightTranslate {
             if(tray==null) return;
             buttonItem.Checked=settings.Mode=="button"; autoItem.Checked=settings.Mode=="auto"; clipboardItem.Checked=settings.Mode=="clipboard";
             companionItem.Checked=settings.Mode=="companion";
-            trayMode.Text="识别模式 · "+(settings.Mode=="companion"?"仅陪伴":settings.Mode=="clipboard"?"剪贴板":settings.Mode=="auto"?"自动":"点击"); trayService.Text=settings.Service=="web"?"连接 · 官网账号":"连接 · DeepSeek API";
+            trayMode.Text=ProductLanguage.T("识别模式")+" · "+ProductLanguage.T(settings.Mode=="companion"?"仅陪伴":settings.Mode=="clipboard"?"剪贴板":settings.Mode=="auto"?"自动":"点击"); trayService.Text=ProductLanguage.T("连接")+" · "+(settings.Service=="web"?ProductLanguage.T("官网账号"):"DeepSeek API");
             residentItem.Checked=settings.ResidentOrb;
-            pauseItem.Checked=!settings.Enabled; pauseItem.Text=settings.Enabled?"暂停自动识别":"恢复自动识别";
+            pauseItem.Checked=!settings.Enabled; pauseItem.Text=ProductLanguage.T(settings.Enabled?"暂停自动识别":"恢复自动识别");
             tray.Text="大肥译 · "+(settings.Mode=="companion"?"仅陪伴 · 划词已关闭":!settings.Enabled?"已暂停":settings.Mode=="clipboard"?"剪贴板自动翻译":settings.Mode=="auto"?"自动翻译":"点击划词按钮");
         }
         void SaveQuietly() { if(testing) return; try { settings.Save(SettingsSavePath); } catch(Exception e) { if(tray!=null) tray.ShowBalloonTip(3000,"设置未保存",e.Message,Forms.ToolTipIcon.Warning); } }
@@ -225,7 +227,7 @@ namespace LightTranslate {
             bool visible=Popup.IsVisible; ShowPopup(); if(!visible) { var bounds=Native.Bounds(Orb); Native.Place(Popup,new System.Windows.Point(bounds.X-420,bounds.Y)); }
         }
         internal void ChangeMode(string mode,bool dismiss=true) {
-            settings.Mode=mode; clipboardWatch.Reset(Native.GetClipboardSequenceNumber());
+            settings.Mode=mode; settings.Enabled=true; clipboardWatch.Reset(Native.GetClipboardSequenceNumber());
             if(mode=="companion") { settings.ResidentOrb=true; CancelRequest(); }
             if(dismiss) Dismiss(); else { selectionVersion++; pendingAt=0; policy.Clear(); Chip.Hide(); }
             UpdateResident(); SaveQuietly(); UpdateTray(); Popup.SetTriggerMode(settings.Mode);

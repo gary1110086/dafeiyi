@@ -31,12 +31,28 @@ Both website-account and API responses appear in the same floating window, with 
 
 ## Download and get started
 
-1. Open the [latest release](https://github.com/gary1110086/dafeiyi/releases/latest), download **DaFeiYi-Windows-x64-v1.1.0.zip**, and extract the entire archive into a folder.
+1. Open the [latest release](https://github.com/gary1110086/dafeiyi/releases/latest), download **DaFeiYi-Windows-x64-v1.1.1.zip**, and extract the entire archive into a folder.
 2. Double-click **轻译.exe** to launch the app. To add a desktop shortcut, run **安装到桌面.cmd**. To also enable startup at Windows sign-in, run **安装并开机启动.cmd**.
 3. In Settings, choose your connection: **官网账号** (Website account) to sign in to your own DeepSeek account and return to the popup, or **API** to enter your own API key.
 4. Select a passage and click **翻译** (Translate) or **解释** (Explain). Both website and API responses stream into the same whale-themed popup.
 
 Supports Windows 10/11 x64 with .NET Framework 4.8. Website-account mode also requires the [Microsoft Edge WebView2 Runtime](https://developer.microsoft.com/microsoft-edge/webview2/), which is commonly present on recent Windows/Edge installations. No Python, Node.js, or Electron installation is required.
+
+## New in v1.1.1
+
+- Click anywhere on the whale or right-click to open its menu. All four modes appear at the top; hold and drag to move it.
+- Modes, reading tools, history and terms, companion interactions, and display preferences are grouped. The tray follows the same order.
+- Selecting a mode resumes recognition so a previous pause does not silently block it. Companion mode still suppresses automatic translation.
+- Settings can open the website in Chrome, or the default browser when Chrome is absent. This helper uses a separate session and does not sign the app in.
+- **Settings → Updates & about → Check for updates → Save & update** downloads, verifies, replaces program files and restarts. Failed replacements restore old files without clearing user data.
+
+System-browser login needs a callback authorization flow or a browser extension to connect back to the app. Official [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/credentials/deepseek-account-platform/README.md) uses platform authorization and PKCE callbacks for inference access; it differs from the chat website session and does not imply free website chat. DaFeiYi currently signs its website session in inside the app. Closing that account window keeps the session.
+
+### Keep your local data when updating
+
+API settings, website sessions, the last 30 history entries, saved terms and imported backgrounds live in `%LOCALAPPDATA%\LightTranslate`, separate from program files. Updates preserve this directory, shortcuts and startup preferences. Checks contact public GitHub without sending personal settings. Downloads are SHA-256 verified, package files are checked against their manifest, and replaced files are backed up.
+
+For the first upgrade from v1.1.0 or earlier, download and fully extract the new package, then run **安装到桌面.cmd** or **安装并开机启动.cmd** directly over the existing installation. No uninstall is required; keep the user data directory. From v1.1.1 onward, future upgrades can run in Settings. Moving to a different computer is a separate migration: Windows-encrypted API credentials and browser sessions are not guaranteed to work across accounts.
 
 ## New in v1.1
 

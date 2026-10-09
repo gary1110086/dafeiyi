@@ -36,6 +36,7 @@ namespace LightTranslate {
             title.MouseLeftButtonDown+=delegate(object sender,MouseButtonEventArgs e) { if(!Ui.Interactive(e.OriginalSource as DependencyObject,title)) try { DragMove(); } catch(InvalidOperationException) { } }; Ui.Row(root,title,0);
             browser.DefaultBackgroundColor=System.Drawing.Color.FromArgb(255,16,30,50); Ui.Row(root,browser,1);
             var footer=new StackPanel(); status=Ui.Text(ProductLanguage.T("首次使用请登录官网，完成后检查连接并返回浮窗。"),11,"#AEBFD3"); status.Margin=new Thickness(2,10,2,8); footer.Children.Add(status);
+            footer.Children.Add(Ui.Text(ProductLanguage.T("这是大肥译的独立官网会话。关闭此窗口保留登录；Chrome 中的登录不会同步到这里。"),11,"#AEBFD3"));
             var actions=new StackPanel { Orientation=Orientation.Horizontal }; actions.Children.Add(Ui.Button("检查连接",async delegate { await CheckConnectionAsync(); },true)); var refresh=Ui.Button("刷新官网",async delegate { await RefreshAsync(); },false); refresh.Margin=new Thickness(8,0,0,0); actions.Children.Add(refresh);
             var diagnosis=Ui.Button("导出连接诊断",ExportDiagnostics,false); diagnosis.Margin=new Thickness(8,0,0,0); actions.Children.Add(diagnosis); footer.Children.Add(actions); Ui.Row(root,footer,2); Content=root;
             Loaded+=async delegate { await EnsureInitialized(); };
@@ -95,7 +96,7 @@ namespace LightTranslate {
         void ExportDiagnostics() {
             var dialog=new Microsoft.Win32.SaveFileDialog { FileName="DaFeiYi-connection.txt",Filter="Text|*.txt" };
             if(dialog.ShowDialog(this)!=true) return;
-            try { File.WriteAllText(dialog.FileName,"DaFeiYi 1.1.0\nConnection: "+Connection.Code+"\nWebView2: "+(Ready?browser.CoreWebView2.Environment.BrowserVersionString:"unavailable")+"\nWebsite: https://chat.deepseek.com\nNo account, cookies, API keys, selected text or chat content included.\n"); status.Text="诊断已保存，不含账号、Cookie、API Key 或聊天内容。"; } catch(Exception) { status.Text="诊断文件未能保存，请选择可写入的位置。"; }
+            try { File.WriteAllText(dialog.FileName,"DaFeiYi "+ProductLanguage.Version+"\nConnection: "+Connection.Code+"\nWebView2: "+(Ready?browser.CoreWebView2.Environment.BrowserVersionString:"unavailable")+"\nWebsite: https://chat.deepseek.com\nNo account, cookies, API keys, selected text or chat content included.\n"); status.Text="诊断已保存，不含账号、Cookie、API Key 或聊天内容。"; } catch(Exception) { status.Text="诊断文件未能保存，请选择可写入的位置。"; }
         }
         internal async Task<string> FillDraft() {
             if(closed||!Ready||!ServiceProfile.IsChat(browser.Source==null?"":browser.Source.AbsoluteUri)) return "unavailable";

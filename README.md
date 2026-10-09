@@ -29,12 +29,28 @@
 
 ## 下载与使用
 
-1. 到 [最新版本](https://github.com/gary1110086/dafeiyi/releases/latest) 下载 **DaFeiYi-Windows-x64-v1.1.0.zip**，完整解压到一个文件夹。
+1. 到 [最新版本](https://github.com/gary1110086/dafeiyi/releases/latest) 下载 **DaFeiYi-Windows-x64-v1.1.1.zip**，完整解压到一个文件夹。
 2. 双击 **轻译.exe** 即可运行。想放到桌面，双击 **安装到桌面.cmd**；需要开机启动，选择 **安装并开机启动.cmd**。
 3. 设置里选择连接：**官网账号**登录自己的 DeepSeek 账号后返回浮窗，或 **API**填写自己的 API Key。
 4. 划选一段文字，点击「翻译 / 解释」。官网和 API 回答都逐步显示在同一个肥鱼浮窗。
 
 支持 Windows 10/11 x64、.NET Framework 4.8。官网模式需要 [Microsoft Edge WebView2 Runtime](https://developer.microsoft.com/microsoft-edge/webview2/)；较新的 Windows/Edge 通常已安装。没有 Python、Node 或 Electron 依赖。
+
+## v1.1.1：模式入口与登录路径
+
+- 单击肥鱼任意部位或右键即可打开功能，四种模式放在菜单顶部；按住拖动仍可调整位置。
+- 模式、阅读工具、记录收藏、陪伴互动与显示设置分开；托盘入口按相同顺序整理。
+- 选择一个模式会恢复识别，避免之前的暂停状态让新模式看起来没有生效。仅陪伴模式仍关闭自动翻译。
+- 设置提供 **在 Chrome / 浏览器打开官网**，优先 Chrome，否则使用默认浏览器；这是独立浏览器辅助入口，登录不会同步到应用。
+- **设置 → 更新与关于 → 检查更新 → 保存设置并更新**：校验下载与文件清单后替换程序并重启。安装失败时恢复被替换的旧文件；不会清空用户数据。
+
+系统浏览器登录可以实现，但需要连接回应用的授权协议或浏览器扩展。官方 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/credentials/deepseek-account-platform/README.md) 使用平台授权与 PKCE 回调，授权用于推理接口，与聊天官网会话不同，也不能等同于免费聊天。当前大肥译的官网翻译仍使用应用内登录；关闭账号窗口会保留登录。
+
+### 更新时保留什么
+
+API 配置、官网登录会话、最后 30 条历史、术语收藏和自选背景都在 `%LOCALAPPDATA%\LightTranslate`，独立于程序目录。更新只替换发行清单里的程序文件，桌面快捷方式和开机启动不变。更新检查只访问公开 GitHub；不会上传个人配置。下载先校验 SHA-256，再校验包内文件，并保留本次替换文件的备份。
+
+v1.1.0 及更早版本首次升级时：下载新包、完整解压，运行 **安装到桌面.cmd**（需要开机启动则运行 **安装并开机启动.cmd**），直接覆盖安装，**无需卸载，也不要删除用户数据目录**。从 v1.1.1 起，后续版本可在设置中更新。换电脑属于数据迁移；Windows 加密的 API 凭证与浏览器会话不能承诺跨账户直接复用。
 
 ## v1.1：官网恢复与图片理解
 

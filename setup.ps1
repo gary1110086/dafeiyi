@@ -24,7 +24,7 @@ foreach ($process in (Get-Process -Name '轻译' -ErrorAction SilentlyContinue))
     if ($process.Path -eq $programTarget) { Stop-Process -Id $process.Id; if (-not $process.WaitForExit(5000)) { throw '旧版程序未退出，请关闭后重试。' } }
 }
 New-Item -ItemType Directory -Force -Path $targetRoot | Out-Null
-foreach ($name in @('轻译.exe','轻译.exe.config','README.md','README.en.md','LICENSE','THIRD_PARTY_NOTICES.md','SECURITY.md','distribution-manifest.json')) {
+foreach ($name in @('轻译.exe','轻译.exe.config','update-install.ps1','README.md','README.en.md','LICENSE','THIRD_PARTY_NOTICES.md','SECURITY.md','distribution-manifest.json')) {
     Copy-Item -LiteralPath (Join-Path $packageRoot $name) -Destination (Join-Path $targetRoot $name) -Force
 }
 Get-ChildItem -LiteralPath $packageRoot -Filter '*.dll' -File | ForEach-Object { Copy-Item -LiteralPath $_.FullName -Destination (Join-Path $targetRoot $_.Name) -Force }

@@ -43,9 +43,9 @@ namespace LightTranslate {
                 await Check("native head and tail touches play their original interactions",async delegate {
                     var pet=controller.Orb; pet.RestorePosition(new Settings { OrbX=410,OrbY=180 }); pet.SetStatus("idle","阅读就绪",0); await Task.Delay(100);
                     var head=pet.TouchPoint("head"); await Task.Run(async delegate { await Native.TestClick(head); }); await Task.Delay(60);
-                    Assert(pet.CurrentAnimation=="head_pat"&&!pet.MenuOpen,"head touch did not play pat");
+                    Assert(pet.CurrentAnimation=="head_pat"&&pet.MenuOpen,"head touch did not expose menu and play pat"); pet.Menu.IsOpen=false;
                     pet.SetReducedMotionForTest(true); pet.SetReducedMotionForTest(false); var tail=pet.TouchPoint("tail"); await Task.Run(async delegate { await Native.TestClick(tail); }); await Task.Delay(60);
-                    Assert(pet.CurrentAnimation=="tail"&&!pet.MenuOpen,"tail touch did not play tail");
+                    Assert(pet.CurrentAnimation=="tail"&&pet.MenuOpen,"tail touch did not expose menu and play tail"); pet.Menu.IsOpen=false;
                     UiTests.Capture(pet,Path.Combine(folder,"大肥鱼娘-互动.png"));
                 });
                 await Check("preview stays labeled when it matches current base and real work changes",async delegate {

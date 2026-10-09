@@ -8,7 +8,7 @@ namespace LightTranslate {
             menu.Opening+=delegate { Style(menu.Items); };
         }
         static void Style(ToolStripItemCollection items) {
-            foreach(ToolStripItem item in items) { item.ForeColor=Color.FromArgb(222,232,244); item.Padding=new Padding(8,6,8,6); var sub=item as ToolStripMenuItem; if(sub!=null) { sub.DropDown.BackColor=Color.FromArgb(23,38,62); sub.DropDown.ForeColor=item.ForeColor; Style(sub.DropDownItems); } }
+            foreach(ToolStripItem item in items) { item.Text=ProductLanguage.T(item.Text); item.ForeColor=Color.FromArgb(222,232,244); item.Padding=new Padding(8,6,8,6); var sub=item as ToolStripMenuItem; if(sub!=null) { sub.DropDown.BackColor=Color.FromArgb(23,38,62); sub.DropDown.ForeColor=item.ForeColor; Style(sub.DropDownItems); } }
         }
         sealed class Renderer:ToolStripProfessionalRenderer {
             internal Renderer():base(new Palette()) { }
