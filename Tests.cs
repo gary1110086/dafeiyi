@@ -17,7 +17,7 @@ namespace LightTranslate {
             catch(Exception e) { failed++; report.AppendLine("FAIL " + name + ": " + e.Message); }
         }
         static void Assert(bool value, string reason) { if(!value) throw new Exception(reason); }
-        public static int Run(string path) { ReadingChecks.Run(Check); CompanionChecks.Run(Check);
+        public static int Run(string path) { ReadingChecks.Run(Check); CompanionChecks.Run(Check); VisionChecks.Run(Check);
             Check("all whale action atlases are packaged with original frame order and attribution",delegate {
                 string folder=Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"Assets","Whale");
                 Assert(File.Exists(Path.Combine(folder,"manifest.json")),"whale assets not packaged");

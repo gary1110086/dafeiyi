@@ -16,7 +16,7 @@ namespace LightTranslate {
                     oldClipboard=Clipboard.GetDataObject();
                     using(var server=new MockServer("200 OK","data: {\"choices\":[{\"delta\":{\"content\":\"实际快捷键结果\"}}]}\n\ndata: [DONE]\n\n",false)) {
                         var s=new Settings(); s.ApiKey="runtime-test-key"; s.BaseUrl=server.Url;
-                        controller=new AppController(s,false);
+                        s.OnboardingSeen=true; controller=new AppController(s,false,null,null,Path.Combine(folder,"runtime-settings.json"));
                         controller.SettingsSavePath=Path.Combine(folder,"runtime-settings.json");
                         if(!controller.ShortcutsReady) throw new Exception("global shortcuts not registered"); report.AppendLine("PASS native tray and global hotkeys initialized");
                         process=Process.Start(new ProcessStartInfo(Process.GetCurrentProcess().MainModule.FileName,"--fixture \""+info+"\"") { UseShellExecute=false });

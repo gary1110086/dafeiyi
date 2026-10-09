@@ -44,7 +44,7 @@ namespace LightTranslate {
                     });
                     await Check("native outside clicks and focus changes close passive result; pin protects; dismissal cancels stream",async delegate {
                         Assert(clipboardSaved,"cannot snapshot clipboard before native copy test");
-                        var c=new AppController(new Settings { Mode="companion",ResidentOrb=false,ApiKey="local-test-key" },false); c.SettingsSavePath=Path.Combine(folder,"window-settings.json"); System.Diagnostics.Process fixture=null; string info=Path.Combine(folder,"window-fixture-"+Guid.NewGuid().ToString("N"));
+                        var c=new AppController(new Settings { Mode="companion",ResidentOrb=false,ApiKey="local-test-key",OnboardingSeen=true },false,null,null,Path.Combine(folder,"window-settings.json")); c.SettingsSavePath=Path.Combine(folder,"window-settings.json"); System.Diagnostics.Process fixture=null; string info=Path.Combine(folder,"window-fixture-"+Guid.NewGuid().ToString("N"));
                         try {
                             Assert(c.ShortcutsReady,"native shortcut setup failed"); fixture=System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName,"--fixture \""+info+"\"") { UseShellExecute=false });
                             for(int i=0;i<60&&!File.Exists(info);i++) await Task.Delay(50); Assert(File.Exists(info),"external fixture not ready"); var hwnd=new IntPtr(long.Parse(File.ReadAllText(info))); var coords=File.ReadAllText(info+".bounds").Split(','); var point=new Point(double.Parse(coords[0],System.Globalization.CultureInfo.InvariantCulture)+50,double.Parse(coords[1],System.Globalization.CultureInfo.InvariantCulture)+20);

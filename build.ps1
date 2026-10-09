@@ -1,4 +1,4 @@
-param([switch]$Test,[string]$OutputDirectory)
+﻿param([switch]$Test,[string]$OutputDirectory)
 $ErrorActionPreference = 'Stop'
 $taskFramework = Join-Path $env:WINDIR 'Microsoft.NET\Framework64\v4.0.30319'
 $taskTarget = if ($OutputDirectory) { [System.IO.Path]::GetFullPath($OutputDirectory) } else { Join-Path $PSScriptRoot '..\轻译' }

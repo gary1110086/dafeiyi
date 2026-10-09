@@ -12,12 +12,12 @@ namespace LightTranslate {
     public class ResidentOrb:Window {
         public event Action ScreenRequested,ClipboardRequested,ResultRequested,SettingsRequested,DisableRequested,PositionChanged,InteractionStarted,PreferencesChanged;
         public event Action CompanionRequested,HistoryRequested,TermsRequested;
-        readonly MenuItem companion=new MenuItem { Header="仅陪伴 · 关闭划词",IsCheckable=true };
+        readonly MenuItem companion=new MenuItem { Header=ProductLanguage.T("仅陪伴 · 关闭划词"),IsCheckable=true };
         readonly ContextMenu menu=new ContextMenu();
         readonly Border ball;
         readonly Image portrait=new Image { Stretch=Stretch.Uniform,IsHitTestVisible=false };
-        readonly TextBlock fallback=Ui.Text("译",32,"#5864D8");
-        readonly TextBlock caption=Ui.Text("阅读就绪",10,"#737F95");
+        readonly TextBlock fallback=Ui.Text(ProductLanguage.T("译"),32,"#5864D8");
+        readonly TextBlock caption=Ui.Text(ProductLanguage.T("阅读就绪"),10,"#737F95");
         readonly Border pill;
         readonly Canvas edgeCanvas=new Canvas { IsHitTestVisible=false,ClipToBounds=true,HorizontalAlignment=HorizontalAlignment.Left };
         readonly Image edgeImage=new Image { IsHitTestVisible=false,Stretch=Stretch.Fill,RenderTransformOrigin=new Point(0.5,0.5) };
@@ -49,17 +49,17 @@ namespace LightTranslate {
         internal bool Interacting { get { return pressed||menu.IsOpen; } }
         internal ContextMenu Menu { get { return menu; } }
         public ResidentOrb() {
-            Title="大肥译 · 大肥鱼娘"; Width=176; Height=177; Topmost=true; ShowInTaskbar=false; ShowActivated=false;
+            Title=ProductLanguage.T("大肥译 · 大肥鱼娘"); Width=176; Height=177; Topmost=true; ShowInTaskbar=false; ShowActivated=false;
             Focusable=false;
             WindowStyle=WindowStyle.None; ResizeMode=ResizeMode.NoResize; AllowsTransparency=true; Background=Brushes.Transparent;
             ball=new Border { Background=Brushes.Transparent,Cursor=Cursors.Hand,Child=portrait };
             fallback.HorizontalAlignment=HorizontalAlignment.Center; fallback.VerticalAlignment=VerticalAlignment.Center;
-            fallback.ToolTip="角色素材暂不可用，右键仍可使用翻译功能";
+            fallback.ToolTip=ProductLanguage.T("角色素材暂不可用，右键仍可使用翻译功能");
             var root=new StackPanel(); root.Children.Add(ball);
             pill=new Border { Background=Ui.Brush("#F4F6FA"),BorderBrush=Ui.Brush("#E5E9F2"),BorderThickness=new Thickness(1),CornerRadius=new CornerRadius(10),Padding=new Thickness(9,4,9,4),HorizontalAlignment=HorizontalAlignment.Center,MaxWidth=170,Child=caption };
             root.ClipToBounds=true; edgeCanvas.Children.Add(edgeImage); edgeCanvas.Children.Add(edgeIdleImage);
             caption.TextWrapping=TextWrapping.NoWrap; caption.TextTrimming=TextTrimming.CharacterEllipsis; root.Children.Add(pill);
-            Content=root; ball.ToolTip="大肥译 · 头部摸摸，身体打开菜单，尾巴互动\n右键展开功能 · 拖动放置";
+            Content=root; ball.ToolTip=ProductLanguage.T("大肥译 · 头部摸摸，身体打开菜单，尾巴互动\n右键展开功能 · 拖动放置");
             pill.MouseLeftButtonUp+=delegate { OpenMenu(); }; pill.MouseRightButtonUp+=delegate { OpenMenu(); };
             pill.MouseLeftButtonDown+=delegate { if(InteractionStarted!=null) InteractionStarted(); }; pill.MouseRightButtonDown+=delegate { if(InteractionStarted!=null) InteractionStarted(); };
             SourceInitialized+=delegate { Native.MakeNonActivating(this); };
@@ -72,17 +72,17 @@ namespace LightTranslate {
             Add("设置",delegate { if(SettingsRequested!=null) SettingsRequested(); },null,"settings");
             companion.Icon=MenuIcons.Create("companion"); companion.Click+=delegate { if(CompanionRequested!=null) CompanionRequested(); }; menu.Items.Add(companion);
             menu.Items.Add(new Separator());
-            var play=new MenuItem { Header="和肥鱼玩",Icon=MenuIcons.Create("heart") }; var pat=new MenuItem { Header="摸摸头",Icon=MenuIcons.Create("heart") }; pat.Click+=delegate { PlayInteraction("head_pat"); }; play.Items.Add(pat); var feed=new MenuItem { Header="喂一口 token · 本地互动",Icon=MenuIcons.Create("food") }; feed.Click+=delegate { PlayInteraction("eat_token"); }; play.Items.Add(feed); menu.Items.Add(play);
-            var previews=new MenuItem { Header="动作预览",Icon=MenuIcons.Create("actions") };
+            var play=new MenuItem { Header=ProductLanguage.T("和肥鱼玩"),Icon=MenuIcons.Create("heart") }; var pat=new MenuItem { Header=ProductLanguage.T("摸摸头"),Icon=MenuIcons.Create("heart") }; pat.Click+=delegate { PlayInteraction("head_pat"); }; play.Items.Add(pat); var feed=new MenuItem { Header=ProductLanguage.T("喂一口 token · 本地互动"),Icon=MenuIcons.Create("food") }; feed.Click+=delegate { PlayInteraction("eat_token"); }; play.Items.Add(feed); menu.Items.Add(play);
+            var previews=new MenuItem { Header=ProductLanguage.T("动作预览"),Icon=MenuIcons.Create("actions") };
             string[] names={"idle","waiting","thinking","working","working_search","working_command","success","error","dragging","dragging_release","dragging_dizzy","dragging_protest","head_pat","poke","tail","eat_token"};
             string[] labels={"待机","等待","思考","书写","查找","执行","完成","遇到问题","抱起","落地","晕乎乎","抗议","摸摸头","戳戳","摆尾","吃 token"};
-            for(int i=0;i<names.Length;i++) { string action=names[i],label=labels[i]; var item=new MenuItem { Header=label }; item.Click+=delegate { Preview(action,label); }; previews.Items.Add(item); } menu.Items.Add(previews);
+            for(int i=0;i<names.Length;i++) { string action=names[i],label=labels[i]; var item=new MenuItem { Header=ProductLanguage.T(label) }; item.Click+=delegate { Preview(action,label); }; previews.Items.Add(item); } menu.Items.Add(previews);
             menu.Items.Add(new Separator());
-            var display=new MenuItem { Header="显示与收起",Icon=MenuIcons.Create("edge") };
-            var sizes=new MenuItem { Header="大小",Icon=MenuIcons.Create("size") }; foreach(int size in new[]{144,176,208}) { int selected=size; var item=new MenuItem { Header=size==144?"小巧":size==176?"标准":"大一点",IsCheckable=true }; menu.Opened+=delegate { item.IsChecked=PetSize==selected; }; item.Click+=delegate { Undock(); ApplySize(selected); Native.Clamp(this); TryDock(); if(PositionChanged!=null) PositionChanged(); if(PreferencesChanged!=null) PreferencesChanged(); }; sizes.Items.Add(item); } display.Items.Add(sizes);
-            var reduce=new MenuItem { Header="减少动态",IsCheckable=true,Icon=MenuIcons.Create("motion") }; reduce.Click+=delegate { ApplyMotion(reduce.IsChecked); if(PreferencesChanged!=null) PreferencesChanged(); }; menu.Opened+=delegate { reduce.IsChecked=ReducedMotion; }; display.Items.Add(reduce);
-            var edgeOption=new MenuItem { Header="贴边探头",IsCheckable=true,Icon=MenuIcons.Create("edge") }; edgeOption.Click+=delegate { EdgeHide=edgeOption.IsChecked; if(!EdgeHide) Undock(); else TryDock(); if(PreferencesChanged!=null) PreferencesChanged(); }; display.Items.Add(edgeOption);
-            var captionOption=new MenuItem { Header="空闲时隐藏状态文字",IsCheckable=true,Icon=MenuIcons.Create("label") }; captionOption.Click+=delegate { HideIdleCaption=captionOption.IsChecked; if(PreferencesChanged!=null) PreferencesChanged(); }; display.Items.Add(captionOption);
+            var display=new MenuItem { Header=ProductLanguage.T("显示与收起"),Icon=MenuIcons.Create("edge") };
+            var sizes=new MenuItem { Header=ProductLanguage.T("大小"),Icon=MenuIcons.Create("size") }; foreach(int size in new[]{144,176,208}) { int selected=size; var item=new MenuItem { Header=size==144?"小巧":size==176?"标准":"大一点",IsCheckable=true }; menu.Opened+=delegate { item.IsChecked=PetSize==selected; }; item.Click+=delegate { Undock(); ApplySize(selected); Native.Clamp(this); TryDock(); if(PositionChanged!=null) PositionChanged(); if(PreferencesChanged!=null) PreferencesChanged(); }; sizes.Items.Add(item); } display.Items.Add(sizes);
+            var reduce=new MenuItem { Header=ProductLanguage.T("减少动态"),IsCheckable=true,Icon=MenuIcons.Create("motion") }; reduce.Click+=delegate { ApplyMotion(reduce.IsChecked); if(PreferencesChanged!=null) PreferencesChanged(); }; menu.Opened+=delegate { reduce.IsChecked=ReducedMotion; }; display.Items.Add(reduce);
+            var edgeOption=new MenuItem { Header=ProductLanguage.T("贴边探头"),IsCheckable=true,Icon=MenuIcons.Create("edge") }; edgeOption.Click+=delegate { EdgeHide=edgeOption.IsChecked; if(!EdgeHide) Undock(); else TryDock(); if(PreferencesChanged!=null) PreferencesChanged(); }; display.Items.Add(edgeOption);
+            var captionOption=new MenuItem { Header=ProductLanguage.T("空闲时隐藏状态文字"),IsCheckable=true,Icon=MenuIcons.Create("label") }; captionOption.Click+=delegate { HideIdleCaption=captionOption.IsChecked; if(PreferencesChanged!=null) PreferencesChanged(); }; display.Items.Add(captionOption);
             menu.Opened+=delegate { edgeOption.IsChecked=EdgeHide; captionOption.IsChecked=HideIdleCaption; }; menu.Items.Add(display);
             Add("收起桌面鱼娘",delegate { if(DisableRequested!=null) DisableRequested(); },null,"hide");
             menu.PlacementTarget=ball; menu.Placement=System.Windows.Controls.Primitives.PlacementMode.Left;
@@ -114,7 +114,7 @@ namespace LightTranslate {
             ApplySize(176); RenderFrame();
         }
         public void SetStatus(string state,string text,int durationMs) {
-            animation.SetBase(state); statusText=text; statusDeadline=durationMs>0?clock.ElapsedMilliseconds+durationMs:0;
+            animation.SetBase(state); statusText=ProductLanguage.T(text); statusDeadline=durationMs>0?clock.ElapsedMilliseconds+durationMs:0;
             if(!previewing&&captionDeadline==0) caption.Text=text; caption.ToolTip=text; RenderFrame();
         }
         public void PlayInteraction(string action) {
@@ -152,7 +152,7 @@ namespace LightTranslate {
             shownIndex=animation.Index; shownClip=animation.ActiveClip;
         }
         void Add(string text,Action action,string shortcut,string icon) {
-            var item=new MenuItem { Header=text,Icon=MenuIcons.Create(icon),InputGestureText=shortcut??"",Padding=new Thickness(10,7,10,7) }; item.Click+=delegate { action(); }; menu.Items.Add(item);
+            var item=new MenuItem { Header=ProductLanguage.T(text),Icon=MenuIcons.Create(icon),InputGestureText=shortcut??"",Padding=new Thickness(10,7,10,7) }; item.Click+=delegate { action(); }; menu.Items.Add(item);
         }
         internal void OpenMenu() { if(InteractionStarted!=null) InteractionStarted(); menu.IsOpen=true; }
         internal void Suspend() { menu.IsOpen=false; Hide(); }

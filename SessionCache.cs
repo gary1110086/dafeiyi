@@ -49,6 +49,8 @@ namespace LightTranslate {
             if(s.Service=="web") profile=new List<string>{"service:web",s.Thinking?"thinking":"standard",mode,mode=="explain"?s.ExplainPrompt:s.TranslatePrompt,(source??"").Trim()};
             // Keep old standard-mode cache keys compatible; isolate thinking results.
             if(s.Service!="web"&&s.Thinking&&ServiceProfile.SupportsThinking(s.Model)) profile.Add("thinking:high");
+            if(s.TargetLanguage!="zh-CN") profile.Add("output:"+s.TargetLanguage);
+            if(s.Image!=null) profile.Add("image:"+s.Image.Hash+":"+s.Image.Prompt);
             using(var hash=SHA256.Create()) return Convert.ToBase64String(hash.ComputeHash(Encoding.UTF8.GetBytes(new JavaScriptSerializer().Serialize(profile))));
         }
         public void Store(Settings settings,string source,string mode,string answer) {

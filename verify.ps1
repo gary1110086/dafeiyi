@@ -1,12 +1,14 @@
+﻿param([string]$OutputDirectory)
 $ErrorActionPreference = 'Stop'
-& (Join-Path $PSScriptRoot 'build.ps1') -Test
-$taskExe = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\轻译\轻译.exe'))
-$taskReportRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\轻译\验证报告'))
+$taskOutput=if($OutputDirectory){[System.IO.Path]::GetFullPath($OutputDirectory)}else{[System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\轻译'))}
+& (Join-Path $PSScriptRoot 'build.ps1') -Test -OutputDirectory $taskOutput
+$taskExe = Join-Path $taskOutput '轻译.exe'
+$taskReportRoot = Join-Path $taskOutput '验证报告'
 New-Item -ItemType Directory -Force -Path $taskReportRoot | Out-Null
-foreach ($taskMode in @('ui','runtime','pet','render','companion','reading','window','product','web-bridge')) {
+foreach ($taskMode in @('ui','runtime','pet','render','companion','reading','window','product','web-bridge','website-ui','iteration')) {
     $taskFolder = Join-Path $taskReportRoot $taskMode
     $taskProcess = Start-Process -FilePath $taskExe -ArgumentList @(('--' + $taskMode + '-test'), ('"' + $taskFolder + '"')) -PassThru -Wait -WindowStyle Hidden
     Get-Content -LiteralPath (Join-Path $taskFolder ($taskMode + '-test.txt')) -Encoding utf8
-    if ($taskProcess.ExitCode -ne 0) { throw ($taskMode + ' 验证失败') }
+    if ($taskProcess.ExitCode -ne 0) { throw ($taskMode + ' verification failed') }
 }
-Write-Output '全部本地验证通过；API 测试使用本机模拟服务，没有发起付费请求。'
+Write-Output 'All local checks passed. API regression uses a local mock; no paid requests.'

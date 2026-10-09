@@ -15,6 +15,8 @@ namespace LightTranslate {
         [STAThread] public static int Main(string[] args) {
             if(args.Length>0 && args[0]=="--self-test") return Tests.Run(args.Length>1?args[1]:"self-test.txt");
             var app=new Application { ShutdownMode=ShutdownMode.OnExplicitShutdown };
+            if(args.Length==0) ProductLanguage.Interface=Settings.Load(Settings.DefaultPath).InterfaceLanguage;
+            AppController.RequireIsolatedProfile=args.Length>0;
             Ui.Initialize(app);
             if(args.Length>0 && args[0]=="--fixture") { UiTests.Fixture(app,args[1]); return 0; }
             if(args.Length>0 && args[0]=="--ui-test") return UiTests.Run(args[1],app);
@@ -28,6 +30,9 @@ namespace LightTranslate {
             if(args.Length>0 && args[0]=="--web-smoke-test") return ProductUiTests.WebSmoke(args[1],app);
             if(args.Length>0 && args[0]=="--web-connect-test") return ProductUiTests.WebSmoke(args[1],app,true);
             if(args.Length>0 && args[0]=="--web-bridge-test") return WebBridgeTests.Run(args[1],app);
+            if(args.Length>0 && args[0]=="--iteration-test") return IterationUiTests.Run(args[1],app);
+            if(args.Length>0 && args[0]=="--website-ui-test") return WebsiteUiTests.Run(args[1],app);
+            if(args.Length>0 && args[0]=="--vision-connect-test") return VisionLive.Run(args[1],args.Length>2?args[2]:"web",app);
             bool created;
             using(var singleton=new Mutex(true,"Local\\LightTranslate.Desktop.v1",out created)) {
                 if(!created) { MessageBox.Show("大肥译已经在运行。请在任务栏右下角托盘中右键肥鱼图标打开设置。","大肥译"); return 0; }
@@ -48,7 +53,8 @@ namespace LightTranslate {
         public ChipView Chip=new ChipView(); public PopupView Popup=new PopupView();
         public ResidentOrb Orb=new ResidentOrb();
         public bool ShortcutsReady;
-        internal string SettingsSavePath=Settings.DefaultPath;
+        internal static bool RequireIsolatedProfile;
+        internal string SettingsSavePath;
         internal Func<IntPtr> Foreground=Native.GetForegroundWindow;
         internal Func<IntPtr,System.Windows.Point,Task<SelectionResult>> Reader=SelectionService.ReadAsync;
         internal Func<IntPtr,Task<string>> Copier=Native.TryCopySelection;
@@ -61,6 +67,7 @@ namespace LightTranslate {
         internal Task ProbeForTest(IntPtr hwnd,System.Windows.Point point) { return Probe(hwnd,point,++selectionVersion); }
         Settings settings; bool testing,disposed,ocrStarting; SettingsView settingsWindow;
         DeepSeekWebView webWindow; internal Action<string> WebPresenter;
+        string retryMode="translate",retryQuestion=null,retrySource="";
         internal Func<Settings,string,string,List<Dictionary<string,string>>,Action<string>,CancellationToken,Task> WebStreamer;
         SelectionPolicy policy=new SelectionPolicy(); RequestGeneration generation=new RequestGeneration();
         GestureOrigins gestureOrigins=new GestureOrigins();
@@ -71,7 +78,9 @@ namespace LightTranslate {
         readonly PopupFocusLifetime popupLifetime=new PopupFocusLifetime(); long popupActionAt;
         internal IList<CachedResult> RecentResults { get { return cache.Recent; } }
         CancellationTokenSource request; List<Dictionary<string,string>> history=new List<Dictionary<string,string>>();
-        string selected=""; System.Windows.Point anchor=new System.Windows.Point(400,250);
+        ImageRequest selectedImage; string selectionText="";
+        string selected { get { return selectionText; } set { selectionText=value; selectedImage=null; } }
+        System.Windows.Point anchor=new System.Windows.Point(400,250);
         Forms.NotifyIcon tray; Forms.ToolStripMenuItem buttonItem,autoItem,clipboardItem,companionItem,pauseItem,residentItem;
         Forms.ToolStripMenuItem trayMode,trayService;
         string IdleCaption { get { return settings.Mode=="companion"?"陪伴模式 · 划词已关闭":settings.Enabled?"阅读就绪":"自动识别已暂停"; } }
@@ -80,7 +89,9 @@ namespace LightTranslate {
         bool mouseDown,shiftDown; System.Windows.Point downPoint,lastUpPoint; long lastUpTime=-1000;
         long pendingAt,chipAt; IntPtr pendingWindow,hotkeyHandle; System.Windows.Point pendingPoint; int selectionVersion,pendingVersion;
         HwndSource hotkeySource; Icon trayIcon;
-        public AppController(Settings s,bool isTesting,string historyPath=null,string termsPath=null) {
+        public AppController(Settings s,bool isTesting,string historyPath=null,string termsPath=null,string settingsPath=null) {
+            if(!isTesting&&RequireIsolatedProfile&&settingsPath==null) throw new InvalidOperationException("Verification requires an isolated settings path before startup.");
+            SettingsSavePath=settingsPath??(isTesting?Path.Combine(Path.GetTempPath(),"DaFeiYi-verification",Guid.NewGuid().ToString("N"),"settings.json"):Settings.DefaultPath);
             settings=s; testing=isTesting; clipboardWatch.Reset(Native.GetClipboardSequenceNumber());
             WebPresenter=OpenWeb;
             WebStreamer=StreamWeb;
@@ -98,7 +109,8 @@ namespace LightTranslate {
             Popup.FollowRequested+=delegate(string text) { Ignore(RequestAsync("followup",text)); };
             Popup.DismissRequested+=Dismiss; Popup.SettingsRequested+=OpenSettings;
             Popup.ScreenRequested+=delegate { Ignore(StartOcr()); };
-            Popup.RetryRequested+=delegate { Ignore(RequestAsync(Popup.CurrentMode,null,true)); };
+            Popup.RetryRequested+=delegate { Ignore(RequestAsync(retrySource==selected?retryMode:Popup.CurrentMode,retrySource==selected?retryQuestion:null,true)); };
+            Popup.WebsiteRecoveryRequested+=delegate { WebPresenter(""); };
             Popup.TriggerModeRequested+=delegate {
                 ChangeMode(settings.Mode=="button"?"auto":settings.Mode=="auto"?"clipboard":settings.Mode=="clipboard"?"companion":"button",false);
             };
@@ -125,7 +137,8 @@ namespace LightTranslate {
             bool o=Native.RegisterHotKey(hotkeyHandle,3,0x4000|0x0002|0x0001,0x53);
             ShortcutsReady=d&&v&&o;
             poll=new DispatcherTimer { Interval=TimeSpan.FromMilliseconds(45) }; poll.Tick+=Poll; poll.Start();
-            if(settings.Mode!="companion"&&((settings.Service=="api"&&settings.ApiKey.Length==0)||settings.LastWarning.Length>0)) { OpenSettings(); Orb.SetStatus("waiting","先在设置中选择连接方式",0); }
+            if(!settings.OnboardingSeen) { settings.OnboardingSeen=true; SaveQuietly(); var welcome=new WelcomeView(OpenSettings,delegate { ChangeMode("companion"); }); welcome.Show(); }
+            else if(settings.Mode!="companion"&&((settings.Service=="api"&&settings.ApiKey.Length==0)||settings.LastWarning.Length>0)) { OpenSettings(); Orb.SetStatus("waiting","先在设置中选择连接方式",0); }
             if(!d||!v||!o) tray.ShowBalloonTip(6000,"大肥译快捷键冲突","Ctrl+Alt+D、V 或 S 被其他程序占用；也可从托盘或浮窗使用对应功能。",Forms.ToolTipIcon.Info);
         }
         static void Ignore(Task task) { /* Event tasks catch and surface errors inside their implementation. */ }
@@ -167,7 +180,7 @@ namespace LightTranslate {
             Popup.SetService(settings); SaveQuietly(); UpdateTray();
             Popup.SetBusy(false,"已切换 · 下一次翻译使用 "+ServiceProfile.Label(settings));
         }
-        DeepSeekWebView Website() { if(webWindow==null) { webWindow=new DeepSeekWebView(); webWindow.Closed+=delegate { webWindow=null; }; } return webWindow; }
+        DeepSeekWebView Website() { if(webWindow==null) { webWindow=new DeepSeekWebView(); webWindow.ConnectionChanged+=delegate(WebsiteState state) { if(settingsWindow!=null) settingsWindow.ShowWebsiteState(state); }; webWindow.Closed+=delegate { webWindow=null; }; } return webWindow; }
         Task StreamWeb(Settings snapshot,string input,string mode,List<Dictionary<string,string>> conversation,Action<string> chunk,CancellationToken cancellation) { return Website().StreamAsync(snapshot,input,mode,conversation,chunk,cancellation); }
         void OpenWeb(string draft) {
             CancelRequest(); Website();
@@ -231,6 +244,7 @@ namespace LightTranslate {
                 if(termBook!=null) termBook.SetReadingStyle(settings);
             });
             settingsWindow.WebRequested+=delegate { WebPresenter(""); };
+            settingsWindow.WebChecker=delegate { return Website().CheckConnectionAsync(); }; if(webWindow!=null) settingsWindow.ShowWebsiteState(webWindow.Connection);
             settingsWindow.Closed+=delegate { settingsWindow=null; }; settingsWindow.Show(); settingsWindow.Activate();
         }
         IntPtr HotkeyHook(IntPtr hwnd,int message,IntPtr wParam,IntPtr lParam,ref bool handled) {
@@ -354,13 +368,16 @@ namespace LightTranslate {
         public async Task RequestAsync(string mode,string question,bool force=false) {
             selectionVersion++; pendingAt=0;
             CancelRequest();
-            string input=mode=="followup"?question:selected;
+            string input=mode=="followup"?question:selectedImage!=null?selectedImage.Prompt:selected;
             if(string.IsNullOrWhiteSpace(input)) return;
             if(mode=="followup" && (history.Count==0||history[history.Count-1]["role"]!="assistant")) { Popup.SetBusy(false,"先完成一次翻译或解释，再继续追问。"); return; }
             if(mode=="followup" && history.Count>=15) { Popup.SetBusy(false,"本次对话已达 7 轮，请重新翻译或解释开始新对话。"); return; }
+            retryMode=mode; retryQuestion=question; retrySource=selected; Popup.SetRecovery(false,false);
             bool shouldPlace=!Popup.IsVisible || (!Popup.Pinned && Popup.SourceText!=selected);
-            Chip.Hide(); Popup.SetSource(selected); if(mode!="followup") Popup.SelectMode(mode);
-            var snapshot=settings.Copy(); if(mode!="followup"&&settings.UseTermPreferences) { string reference=terms.BuildReference(selected); snapshot.TranslatePrompt+=reference; snapshot.ExplainPrompt+=reference; }
+            Chip.Hide(); Popup.SetSource(selected); Popup.SetImage(selectedImage); if(mode!="followup") Popup.SelectMode(mode);
+            var snapshot=settings.Copy(); snapshot.Image=selectedImage; if(selectedImage!=null&&snapshot.Service!="web") snapshot.Model=snapshot.VisionModel;
+            if(selectedImage!=null) { snapshot.TranslatePrompt=selectedImage.Prompt; snapshot.ExplainPrompt=selectedImage.Prompt; }
+            if(mode!="followup"&&settings.UseTermPreferences&&selectedImage==null) { string reference=terms.BuildReference(selected); snapshot.TranslatePrompt+=reference; snapshot.ExplainPrompt+=reference; }
             CachedResult cached;
             if(!force && mode!="followup" && cache.TryGet(snapshot,selected,mode,out cached)) {
                 Popup.SetAnswer(cached.Answer); Popup.SetBusy(false,"已复用 · 本次未请求模型"); Popup.SetProvider(cached.Model); Popup.SetRecent(cache.Recent);
@@ -392,12 +409,13 @@ namespace LightTranslate {
                     history.Clear(); history.Add(new Dictionary<string,string>{{"role","system"},{"content",(mode=="explain"?snapshot.ExplainPrompt:snapshot.TranslatePrompt)+"\n继续用中文回答用户对选中文字的追问。"}});
                 }
                 history.Add(new Dictionary<string,string>{{"role","user"},{"content",input}}); history.Add(new Dictionary<string,string>{{"role","assistant"},{"content",output.ToString()}});
-                if(mode!="followup") { cache.Store(snapshot,input,mode,output.ToString()); Popup.SetRecent(cache.Recent); if(cache.LastError.Length>0) Popup.SetBusy(false,cache.LastError); }
+                if(mode!="followup") { cache.Store(snapshot,selected,mode,output.ToString()); Popup.SetRecent(cache.Recent); if(cache.LastError.Length>0) Popup.SetBusy(false,cache.LastError); }
             } catch(OperationCanceledException) { }
             catch(Exception e) {
                 if(!generation.IsCurrent(id)||disposed) return;
                 string message=e is System.Net.Http.HttpRequestException?"无法连接 API，请检查网络、代理和接口地址。":e.Message;
                 Popup.SetAnswer((output.Length>0?output.ToString()+"\n\n":"")+message); Popup.SetBusy(false,"未完成 · 点击翻译 / 解释可重试");
+                Popup.SetRecovery(true,snapshot.Service=="web");
                 Orb.SetStatus("error","这次没完成，可以重试",0);
             } finally { if(request==current) request=null; current.Dispose(); }
         }
@@ -423,6 +441,7 @@ namespace LightTranslate {
                 var frame=CaptureScreen(); current=new CancellationTokenSource(); ocrRequest=current;
                 view=new OcrOverlay(frame,null,settings.Mode=="auto"); OcrWindow=view; ocrStarting=false; ocrStartupVersion=0;
                 view.Submitted+=delegate(string text,string mode) { Ignore(SubmitOcr(text,mode)); };
+                view.ImageSubmitted+=delegate(ImageRequest image) { Ignore(SubmitImage(image)); };
                 view.Closed+=delegate {
                     current.Cancel(); if(OcrWindow==view) OcrWindow=null; if(ocrRequest==current) ocrRequest=null; current.Dispose();
                     if(!view.WasSubmitted) Orb.SetStatus("idle","阅读就绪",0);
@@ -439,6 +458,9 @@ namespace LightTranslate {
         }
         async Task SubmitOcr(string text,string mode) {
             selectionVersion++; pendingAt=0; CancelRequest(); selected=text.Trim(); anchor=Native.Cursor(); history.Clear(); policy.Clear(); await RequestAsync(mode,null);
+        }
+        internal async Task SubmitImage(ImageRequest image) {
+            selectionVersion++; pendingAt=0; CancelRequest(); selected=image.Label; selectedImage=image; anchor=Native.Cursor(); history.Clear(); policy.Clear(); await RequestAsync(image.Action=="translate"?"translate":"explain",null);
         }
         void ShowNotice(string text,System.Windows.Point point) { CancelRequest(); selected=""; history.Clear(); Chip.Hide(); anchor=point; Popup.SetSource("大肥译"); Popup.SetAnswer(text); Popup.SetBusy(false,"可在右上角打开设置"); ShowPopup(); Native.Place(Popup,point); }
         public void Dismiss() { selectionVersion++; pendingAt=0; CancelOcr(); CancelRequest(); Chip.Hide(); Popup.Hide(); policy.Clear(); }

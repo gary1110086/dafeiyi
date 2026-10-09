@@ -1,4 +1,4 @@
-$ErrorActionPreference='Stop'
+﻿$ErrorActionPreference='Stop'
 Add-Type -AssemblyName System.Drawing
 $taskSource=[Drawing.Bitmap]::new((Join-Path $PSScriptRoot 'Assets\Reading\whale-portrait.png'))
 $taskSizes=@(16,24,32,48,64,128,256)

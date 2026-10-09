@@ -1,0 +1,80 @@
+using System;
+using System.Collections.Generic;
+namespace LightTranslate {
+ internal static class ProductLanguage {
+  internal const string Version="1.1.0";
+  internal static string Interface="zh-CN";
+  internal static string Output(Settings s) {
+   return s.TargetLanguage=="en"?"\nOutput language: English. Translate into English and explain in English. This language choice overrides any other output-language instruction; preserve technical terms and LaTeX.":s.TargetLanguage=="ja"?"\n回答语言：日语。翻译成日语，解释也使用日语。这一语言选择优先于其他输出语言要求；保留专业术语和 LaTeX。":"";
+  }
+  internal static readonly Dictionary<string,string> English=new Dictionary<string,string> {
+   {"大肥译","DaFeiYi"},{"大肥译设置","DaFeiYi settings"},{"读懂一点，陪你久一点","Understand more. Keep a little company."},
+   {"连接与模型","Connection"},{"划词与快捷键","Selection & keys"},{"阅读外观","Reading"},{"桌面肥鱼","Companion"},
+   {"选择官网账号或 API，随时切换。","Use your website account or API. Switch anytime."},{"决定什么时候出现、什么时候翻译。","Choose when to appear and when to translate."},
+   {"让内容清楚，让肥鱼柔和地陪你。","Clear text, a gentle companion."},{"大小、动作和贴边探头，都在这里。","Size, motion and peeking from screen edges."},
+   {"翻译","Translate"},{"解释","Explain"},{"历史","History"},{"最近","Recent"},{"复制","Copy"},{"设置","Settings"},{"设置…","Settings…"},
+   {"保存并开始使用","Save & use"},{"测试 API 连接","Test API"},{"检查官网连接","Check website"},{"读取模型","Load models"},
+   {"使用官网账号 / 登录","Use website / sign in"},{"同一个浮窗，两种连接方式","Two connections. One popup."},
+   {"官网账号 · 登录使用","Website account · sign in"},{"API · 自己的 Key","API · your own key"},{"接口地址","API endpoint"},{"模型","Model"},
+   {"图片理解模型","Image model"},{"深度思考 · 适合复杂解释","Deep thinking · complex questions"},{"深度思考 · 适合复杂问题，等待可能更久","Deep thinking · may take longer"},
+   {"尚未检查 · 使用应用内的官网窗口登录，外部浏览器登录不会同步到这里。","Not checked. Sign in inside this app; external browser sessions are separate."},
+   {"凭证由 Windows 加密，只保存到这台电脑的当前用户账户。","Windows encrypts your key for this user on this computer."},
+   {"官方：https://api.deepseek.com，也支持兼容服务的 /v1 地址。","Official: https://api.deepseek.com. Compatible /v1 services are also supported."},
+   {"Flash 适合日常阅读；Pro 可用于复杂解释。也可填写兼容服务模型。","Flash for everyday reading; Pro for complex explanations. Custom compatible models are accepted."},
+   {"框图与公式使用此模型。DeepSeek 官方 Flash 支持图片；Pro 不支持。图片请求使用当前 API Key 并按个人账号计费。","Crops and formulas use this model. DeepSeek Flash supports images; Pro does not. Image requests use your API key and account billing."},
+   {"首次在官网登录，然后返回浮窗。划词后自动在后台发送，回答逐步显示在大肥译；Markdown、公式、追问、收藏和最近 30 条历史都可以继续用。\n\n登录过期或官网要求验证时，会打开账号窗口。官网模式使用网页账号，不使用 API Key。","Sign in here, then return to the popup. Selected text is sent in the background and answers stream into DaFeiYi, with Markdown, math, follow-ups, bookmarks and 30 recent results.\n\nIf your session expires or verification is required, open the account window. Website mode uses your website account, without an API key."},
+   {"你的设置保存在本机","Settings stay on this computer"},{"点击小按钮","Click the button"},{"自动显示结果","Automatic results"},{"剪贴板自动翻译","Translate clipboard"},
+   {"选中后出现「译 / 解」，点击才请求","Select text, then click Translate / Explain"},{"选中后稍作停顿，自动开始翻译","Select text and pause to translate"},
+   {"复制新文字后自动显示译文；忽略本工具复制的内容","Translate newly copied text; ignore copies from this app"},{"仅陪伴 · 关闭划词与剪贴板自动翻译","Companion only · no automatic translation"},
+   {"触发方式","Trigger"},{"点击才翻译，或选择自动模式；官网和 API 都在肥鱼浮窗显示回答。","Click to translate or use automatic mode. Website and API answers share the same popup."},
+   {"桌面伴侣","Companion"},{"桌面常驻大肥鱼娘","Keep the whale on the desktop"},{"摸头、戳戳、摆尾；身体单击或右键打开功能。拖动后记住位置。","Pat, poke and wag. Click or right-click the body for actions. Drag to move; position is remembered."},
+   {"小巧","Small"},{"标准","Medium"},{"大一点","Large"},{"减少动态","Reduce motion"},{"大小与动态","Size & motion"},
+   {"减少动态会保留状态表情，并停止连续动画和空闲小动作。","Keep status expressions without looping or idle motion."},
+   {"贴边探头：拖到左右屏幕边缘后自动收起，鼠标靠近出来","Peek at the left or right edge; approach to bring her back"},{"空闲时隐藏状态文字，鼠标靠近或工作时再显示","Hide idle captions; show on approach or while working"},
+   {"正在思考 · 原来的肥鱼","Thinking · original whale"},{"气鼓鼓 · 举手肥鱼","Angry · hands up"},{"自选图片","Custom image"},{"纯色 · 专注阅读","Plain · focused reading"},
+   {"选择图片…","Choose image…"},{"背景浓度","Background strength"},{"阅读背景 · 点击展开更换","Reading background"},{"先看懂，\n再往下读。","Understand first.\nThen read on."},
+   {"紧凑行距","Compact"},{"舒适行距","Comfortable"},{"宽松行距","Spacious"},{"字号与行距","Text size & spacing"},{"结果窗口 Aa 也能直接调整；长文自动加强文字遮罩。","Adjust with Aa in the popup too. Long answers automatically strengthen the text backdrop."},
+   {"翻译时参考我保存的常用译法","Use my preferred terminology"},{"只附加本段匹配的术语与常用译法；收藏解释和个人笔记保持本地。","Only matching preferred terms are sent. Saved explanations and notes stay local."},
+   {"阅读排版与术语助手","Typography & terminology"},{"翻译提示词","Translation instructions"},{"解释提示词","Explanation instructions"},{"定制翻译与解释风格","Custom instructions"},
+   {"对指定软件启用复制取词","Copy fallback for selected apps"},{"软件进程名称","Process names"},{"填写进程名称，逗号分隔，可带 .exe","Comma-separated process names; .exe is optional"},
+   {"直接读不到选区时尝试 Ctrl+C，会更新剪贴板。只对这里列出的软件启用。","If direct selection access fails, try Ctrl+C. This updates the clipboard only in the apps listed here."},
+   {"取词兼容与屏幕识字","Compatibility & screen capture"},{"自动模式停顿","Automatic mode delay"},
+   {"屏幕识字","Screen capture"},{"文字识别","Text OCR"},{"框图 / 公式","Image / formula"},{"解释公式","Explain formula"},{"分析图表","Analyze chart"},{"识别并翻译","Read & translate"},
+   {"选中的原文 · 可以直接修正","Selected text · edit if needed"},{"截图问题 · 可补充你想问的内容","Image question · add what you want to know"},{"例如：这一步为什么成立？","For example: why does this step follow?"},
+   {"重新选择","Select again"},{"仅发送框选区域给当前连接。官网失败不会自动切换 API；API 图片理解使用 Flash。","Only this crop goes to your selected service. Website failures never switch to API. API images use Flash."},
+   {"检查官网 / 登录","Check website / sign in"},{"重试这次请求","Retry this request"},{"完成登录 · 返回浮窗","Done signing in · return"},
+   {"DeepSeek 官网账号","DeepSeek website account"},{"在这里登录；翻译、解释和追问仍显示在大肥译浮窗","Sign in here; answers and follow-ups stay in the DaFeiYi popup"},
+   {"首次使用请登录官网，完成后检查连接并返回浮窗。","Sign in, check the connection, then return to the popup."},{"检查连接","Check connection"},{"刷新官网","Refresh website"},{"导出连接诊断","Export diagnostics"},
+   {"选中原文","Selected text"},{"问问这段…  Enter 发送","Ask about this…  Enter to send"},{"展开原文","Expand source"},{"收起原文","Collapse source"},
+   {"收藏术语","Save term"},{"术语收藏","Saved terms"},{"个人笔记","My notes"},{"常用译法","Preferred translation"},{"原文上下文","Source context"},{"保存","Save"},{"取消","Cancel"},{"删除","Delete"},
+   {"语言与首次体验","Language & getting started"},{"界面语言","Interface language"},{"保存后重启应用生效；回答语言独立设置。","Restart after saving to apply. Answer language is independent."},
+   {"翻译与回答语言","Translation & answer language"},{"官网和 API 都使用这个语言；术语与公式保留。","Applies to website and API answers. Terms and formulas are preserved."},
+   {"体验划词示例","Try selection demo"},{"更新与下载","Updates & downloads"},{"打开最新版本下载","Get the latest release"},{"启动体验","Getting started"},
+   {"选中下面的一段英文，再点翻译。不用登录，也不会请求 API。","Select some English text below, then click Translate. This local demo needs no login or API request."},
+   {"先选中文字，试试划词的感觉。","Select some text to try the workflow."},{"这是内置示例译文，未请求 AI。","This is a built-in sample, with no AI request."},{"选择连接方式","Choose connection"},{"开始陪伴","Start companion"},
+   {"打开结果窗口","Open result"},{"翻译剪贴板","Translate clipboard"},{"历史记录 · 最近 30 条","History · last 30"},{"仅陪伴 · 关闭划词","Companion only"},
+   {"摸摸头","Pat head"},{"喂一口 token","Feed a token"},{"动作预览","Preview actions"},{"大小","Size"},{"收起桌面鱼娘","Hide desktop companion"},
+   {"API · 使用你的 API Key","API · your API key"},{"API 模型 · 使用 API Key","API models · your key"},{"DeepSeek 官网 · 登录账号","DeepSeek website · sign in"},
+   {"下一次请求使用","Use for the next request"},{"关闭 · Esc","Close · Esc"},{"固定窗口 · Ctrl+P","Pin window · Ctrl+P"},{"复制原文","Copy source"},{"复制双语 · Ctrl+Shift+C","Copy both · Ctrl+Shift+C"},{"复制译文","Copy answer"},
+   {"复制译文；右键可复制原文 / 双语","Copy answer; right-click for source / both"},{"剪贴板 · 复制翻译","Clipboard · translate copies"},{"自动模式 · 选中即翻译","Automatic · translate selections"},
+   {"字号","Text size"},{"官网账号 · 回答仍显示在肥鱼浮窗","Website account · answers stay in the popup"},{"屏幕识字 / 截图翻译 · Ctrl+Alt+S","Capture / image translation · Ctrl+Alt+S"},
+   {"展开 / 收起原文","Expand / collapse source"},{"展开阅读 · Ctrl+E","Expand reading · Ctrl+E"},{"收回紧凑窗口","Compact window"},{"恢复默认排版","Reset typography"},{"打开术语收藏","Open saved terms"},
+   {"按住这里移动 · Esc 收起","Drag here to move · Esc to hide"},{"收藏术语 · Ctrl+S；右键打开术语本","Save term · Ctrl+S; right-click for termbook"},{"最近 30 条历史记录 · 关闭后仍保留","Last 30 results · saved across restarts"},
+   {"清空历史记录","Clear history"},{"点击切换：小按钮 / 自动翻译 / 剪贴板 / 仅陪伴","Switch: button / automatic / clipboard / companion"},{"点击模式","Button mode"},{"自动模式","Automatic mode"},{"剪贴板模式","Clipboard mode"},{"陪伴模式","Companion mode"},
+   {"由你的 DeepSeek API 提供","Using your DeepSeek API"},{"拖动调整大小","Drag to resize"},{"管理连接…","Manage connection…"},{"可以追问当前内容；Enter 发送","Ask a follow-up; Enter to send"},{"自动模式等待时间","Automatic delay"},{"行距","Line spacing"},
+   {"选中一段文字，开始理解。","Select some text to start understanding."},{"重试这次请求 · Ctrl+R","Retry this request · Ctrl+R"},{"阅读排版 · 字号与行距","Typography · size & spacing"},{"阅读排版 · 自动记住","Typography · remembered"},
+   {"松开收起","Release to hide"},{"喂一口 token · 本地互动","Feed a token · local interaction"},{"显示角色娘","Show companion"},{"空闲时隐藏状态文字","Hide idle captions"},{"角色素材暂不可用，右键仍可使用翻译功能","Companion artwork unavailable; right-click for translation"},{"译","Tr"},{"贴边探头","Edge peeking"},{"阅读就绪","Ready to read"},
+   {"内容仅存于本机 · Windows 加密","Saved locally · Windows encryption"},{"例如：晶格 / 按钮触发翻译；可选。","For example: crystal lattice; optional."},{"已加入收藏","Saved to terms"},{"大肥译 · 收藏术语","DaFeiYi · saved terms"},{"大肥译 · 随身术语收藏","DaFeiYi · termbook"},{"我的常用译法","My preferred translation"},{"我的笔记","My notes"},
+   {"搜索术语、解释或笔记…","Search terms, explanations or notes…"},{"收藏以后，下次在这里找到它。","Save a term to find it here later."},{"收藏独立于历史 · 解释与笔记始终存于本机","Terms are separate from history · explanations and notes stay local"},{"术语","Term"},{"确认删除","Confirm deletion"},{"看原文","View source"},{"编辑","Edit"},{"翻译 / 解释","Translate / explain"},{"＋ 收藏术语","＋ Save term"},
+   {"大肥译 · 屏幕识字","DaFeiYi · screen capture"},{"正在本机识字…  Esc 退出","Recognizing locally…  Esc to exit"},{"大肥译 · 官网账号管理","DaFeiYi · website account"},
+   {"正在本机识字… 可切换「框图 / 公式」 · Esc 退出","Recognizing locally… switch to Image / formula · Esc to exit"},{"未识别到文字，可切换「框图 / 公式」理解图片。","No text found. Switch to Image / formula to understand the image."},{"拖选文字；Shift + 拖动框选区域 · Esc 退出","Drag over text; Shift + drag to select a region · Esc to exit"},{"拖动框选公式、曲线或示意图，预览后点击处理；不会自动上传整屏。","Drag a region around a formula, chart or diagram. Preview it, then submit; the whole screen is never uploaded."},
+   {"官网账号 ⌄","Website ⌄"},{"选中原文 · 下划线可看收藏","Selected source · click underlined saved terms"},
+   {"官网正在加载，请稍后检查连接。","Website loading. Check again shortly."},{"需要登录或重新验证。完成后点击「检查连接」。","Sign in or complete verification, then check the connection."},{"页面尚未就绪，请完成验证或刷新官网。","Page not ready. Complete verification or refresh."},{"官网有未发送的文字，已为你保留；请先发送或清空。","Your unsent website draft is preserved. Send or clear it first."},{"未找到发送控件，请刷新后重试；可导出不含个人内容的诊断。","Send control not found. Refresh and retry, or export private-content-free diagnostics."},{"官网页面已就绪。返回浮窗即可翻译、解释和追问。","Website ready. Return to the popup to translate, explain and follow up."},
+   {"正在检查官网连接…","Checking website…"},{"官网连接正常，回答已返回肥鱼浮窗。","Website connected. Answer returned to the popup."},
+   {"已复制双语","Copied source and answer"},{"已复制译文","Copied answer"},{"已复制原文","Copied source"},{"剪贴板忙，请稍后再试","Clipboard busy. Try again shortly."},
+   {"屏幕识字：Ctrl+Alt+S，可拖选图片中的文字，Shift+拖动框选。识别原文可修改；仅把选中文字交给所选模型。\n本机 OCR 语言：","Ctrl+Alt+S: select recognized text, or switch to Image / formula. Preview and edit before sending.\nLocal OCR languages: "},
+   {"Ctrl + Alt + D  读取选区；不支持时尝试复制\nCtrl + Alt + V  翻译你已复制的文字\nCtrl + Alt + S  屏幕识字 / 截图翻译\nEsc  收起浮窗    ·    小按钮左侧拖柄可移动","Ctrl + Alt + D  Read selection; copy fallback if needed\nCtrl + Alt + V  Translate copied text\nCtrl + Alt + S  Text / image capture\nEsc  Hide popup    ·    Drag the button by its left grip"}
+  };
+  internal static string T(string text) { string value; return Interface=="en"&&text!=null&&English.TryGetValue(text,out value)?value:text; }
+ }
+}
