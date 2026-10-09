@@ -10,6 +10,15 @@ namespace LightTranslate {
   internal static int Run(string folder) {
    Directory.CreateDirectory(folder); string run=Path.Combine(folder,Guid.NewGuid().ToString("N")); Directory.CreateDirectory(run); int pass=0,fail=0; var report=new StringBuilder();
    Action<string,Action> check=delegate(string name,Action action) { try { action(); pass++; report.AppendLine("PASS "+name); } catch(Exception e) { fail++; report.AppendLine("FAIL "+name+": "+e.Message); } };
+   check("release discovery follows repository renames without trusting other owners",delegate {
+    foreach(string repository in new[]{"dafeiyi","deepseek-dafeiyi-translator","future-name"}) { var release=ParseRelease(ReleaseFixture(repository)); Assert(release.ArchiveUrl.Contains("/"+repository+"/releases/download/"),"rename rejected"); }
+    Reject(()=>ParseRelease(ReleaseFixture("dafeiyi","someone-else")));
+    Reject(()=>ParseRelease(ReleaseFixture("dafeiyi",assetOwner:"someone-else")));
+    Reject(()=>ParseRelease(ReleaseFixture("dafeiyi",assetRepository:"other-repository")));
+   });
+   check("release discovery rejects malformed URLs versions drafts and missing checksums",delegate {
+    foreach(string change in new[]{"draft","prerelease","tag","query","port","checksum"}) Reject(()=>ParseRelease(ReleaseFixture("dafeiyi",change:change)));
+   });
    check("verified checksum and manifest stage a program payload",delegate { string zip=Fixture(Path.Combine(run,"valid")); string root=AppUpdates.StageArchive(zip,AppUpdates.Hash(zip),Path.Combine(run,"stage-valid"),"9.9.9"); Assert(File.ReadAllText(Path.Combine(root,"轻译.exe"))=="new-program","payload absent"); });
    check("corrupt download never begins extraction",delegate { string zip=Fixture(Path.Combine(run,"corrupt")); string work=Path.Combine(run,"stage-corrupt"); Reject(()=>AppUpdates.StageArchive(zip,new string('0',64),work,"9.9.9")); Assert(!Directory.Exists(work),"corrupt package wrote files"); });
    check("archive traversal cannot write a sibling profile",delegate { string zip=Fixture(Path.Combine(run,"traversal"),false,false,true); string work=Path.Combine(run,"stage-traversal"); Reject(()=>AppUpdates.StageArchive(zip,AppUpdates.Hash(zip),work,"9.9.9")); Assert(!Directory.Exists(work),"unsafe archive wrote files"); });
@@ -30,6 +39,16 @@ namespace LightTranslate {
    report.AppendLine(string.Format("RESULT {0} passed, {1} failed",pass,fail)); File.WriteAllText(Path.Combine(folder,"update-test.txt"),report.ToString(),new UTF8Encoding(true)); return fail==0?0:1;
   }
   static void Assert(bool value,string message) { if(!value) throw new Exception(message); }
+  static ReleaseUpdate ParseRelease(string json) {
+   var method=typeof(AppUpdates).GetMethod("ParseRelease",System.Reflection.BindingFlags.Static|System.Reflection.BindingFlags.NonPublic); if(method==null) throw new Exception("release parser cannot handle renamed repositories");
+   try { return (ReleaseUpdate)method.Invoke(null,new object[]{json}); } catch(System.Reflection.TargetInvocationException e) { throw e.InnerException; }
+  }
+  static string ReleaseFixture(string repository,string owner="gary1110086",string assetOwner=null,string assetRepository=null,string change=null) {
+   string prefix="https://github.com/"+(assetOwner??owner)+"/"+(assetRepository??repository)+"/releases/download/v9.9.9/",page="https://github.com/"+owner+"/"+repository+"/releases/tag/v9.9.9";
+   if(change=="query") page+="?fake=1"; if(change=="port") page=page.Replace("github.com/","github.com:444/");
+   var assets=new List<object> { new {name="DaFeiYi-Windows-x64-v9.9.9.zip",browser_download_url=prefix+"DaFeiYi-Windows-x64-v9.9.9.zip"} }; if(change!="checksum") assets.Add(new {name="SHA256SUMS.txt",browser_download_url=prefix+"SHA256SUMS.txt"});
+   return new JavaScriptSerializer().Serialize(new {draft=change=="draft",prerelease=change=="prerelease",tag_name=change=="tag"?"v9.9.bad":"v9.9.9",html_url=page,assets=assets});
+  }
   static void Reject(Action action) { bool rejected=false; try { action(); } catch(InvalidOperationException) { rejected=true; } Assert(rejected,"unsafe update accepted"); }
   static string Fixture(string folder,bool badHash=false,bool personal=false,bool traversal=false) {
    Directory.CreateDirectory(folder); string payload=Path.Combine(folder,"payload"); Directory.CreateDirectory(payload);

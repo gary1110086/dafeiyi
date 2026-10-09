@@ -4,9 +4,38 @@
 
 A floating translation assistant for Windows, with a little whale companion to keep you company while you read papers, look up terms, and understand equations. Select some text and click the small button to translate or explain it, switch to automatic or clipboard translation, or simply let her stay on your desktop.
 
+[**Download for Windows**](https://github.com/gary1110086/dafeiyi/releases/latest) · [**Quick start**](docs/getting-started.en.md) · [**Report an issue**](https://github.com/gary1110086/dafeiyi/issues/new/choose)
+
+**DeepSeek website account / API · One reading popup · Markdown & math · An interactive desktop whale**
+
 Choose Simplified Chinese or English controls in Settings → Reading (restart after saving). Choose Chinese, English or Japanese answers independently.
 
 ![DaFeiYi's reading popup and whale companion on an example desktop](docs/images/desktop-companion.png)
+
+## Get started
+
+1. Download **DaFeiYi-Windows-x64-v1.1.2.zip** from the [latest release](https://github.com/gary1110086/dafeiyi/releases/latest) and extract the entire archive. The Source archive is for developers.
+2. Run **安装到桌面.cmd** for a desktop shortcut, or **安装并开机启动.cmd** to also start at Windows sign-in. You can also run **轻译.exe** directly.
+3. Open **Settings → Connection & models**. Sign in to the website inside the app, check readiness, then return; a Chrome login is independent. Alternatively, enter your own API key.
+4. Select a sentence and click Translate / Explain. To try it locally first, open **Settings → Getting started → Try selection demo**. No account or API is needed for the demo.
+
+| Reading style | Mode | When text is sent |
+|---|---|---|
+| Look up text when needed | Button | After clicking Translate / Explain |
+| Read continuously | Automatic | After selecting and pausing |
+| Translate copies from PDFs or other apps | Clipboard | After copying new text |
+| Keep the whale as company | Companion | No automatic capture or translation |
+
+Click the whale to switch modes; hold and drag to move her. Clipboard mode sends newly copied text. Switch to Button or Companion before copying private material.
+
+Supports Windows 10/11 x64 with .NET Framework 4.8. Website mode also needs the [Microsoft Edge WebView2 Runtime](https://developer.microsoft.com/microsoft-edge/webview2/), commonly present on recent Windows/Edge installations. No Python, Node.js or Electron installation is required.
+
+## v1.1.2: a smoother first use
+
+- **Getting started** brings the local demo, connection settings, mode selection and troubleshooting together in both interface languages.
+- Demo actions return to the current settings window instead of opening another one. Choosing Companion in the demo changes the draft; save to apply it.
+- Update discovery uses the fixed GitHub repository ID, so renames do not break release lookup. Download-source, SHA-256 and manifest checks remain in place.
+- If an older version cannot check updates after a rename, manually install this version over it once. Login, keys, history, saved terms and custom backgrounds are preserved.
 
 ## Meet your desktop companion
 
@@ -28,15 +57,6 @@ Both website-account and API responses appear in the same floating window, with 
 ![A DeepSeek website-account response rendered in DaFeiYi's floating window](docs/images/preview.png)
 
 </details>
-
-## Download and get started
-
-1. Open the [latest release](https://github.com/gary1110086/dafeiyi/releases/latest), download **DaFeiYi-Windows-x64-v1.1.1.zip**, and extract the entire archive into a folder.
-2. Double-click **轻译.exe** to launch the app. To add a desktop shortcut, run **安装到桌面.cmd**. To also enable startup at Windows sign-in, run **安装并开机启动.cmd**.
-3. In Settings, choose your connection: **官网账号** (Website account) to sign in to your own DeepSeek account and return to the popup, or **API** to enter your own API key.
-4. Select a passage and click **翻译** (Translate) or **解释** (Explain). Both website and API responses stream into the same whale-themed popup.
-
-Supports Windows 10/11 x64 with .NET Framework 4.8. Website-account mode also requires the [Microsoft Edge WebView2 Runtime](https://developer.microsoft.com/microsoft-edge/webview2/), which is commonly present on recent Windows/Edge installations. No Python, Node.js, or Electron installation is required.
 
 ## New in v1.1.1
 

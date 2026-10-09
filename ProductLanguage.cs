@@ -2,12 +2,13 @@ using System;
 using System.Collections.Generic;
 namespace LightTranslate {
  internal static class ProductLanguage {
-  internal const string Version="1.1.1";
+  internal const string Version="1.1.2";
   internal static string Interface="zh-CN";
   internal static string Output(Settings s) {
    return s.TargetLanguage=="en"?"\nOutput language: English. Translate into English and explain in English. This language choice overrides any other output-language instruction; preserve technical terms and LaTeX.":s.TargetLanguage=="ja"?"\n回答语言：日语。翻译成日语，解释也使用日语。这一语言选择优先于其他输出语言要求；保留专业术语和 LaTeX。":"";
   }
   internal static readonly Dictionary<string,string> English=new Dictionary<string,string> {
+   {"使用指南","Getting started"},{"从第一次划词，到顺手阅读。","From your first selection to a comfortable reading workflow."},
    {"使用模式","Mode"},{"已暂停","Paused"},{"阅读工具","Reading tools"},{"记录与收藏","History & terms"},
    {"更新与关于","Updates & about"},{"当前版本","Current version"},{"检查更新","Check for updates"},{"保存设置并更新","Save & update"},{"发现新版","New version available"},{"已是最新版本","You're up to date"},{"下载更新","Downloading update"},
    {"更新程序，保留你的阅读积累。","Update the app and keep your reading history."},

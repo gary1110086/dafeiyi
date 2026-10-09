@@ -1,0 +1,18 @@
+name: 想法与建议 / Feature request
+description: 分享阅读、翻译或陪伴中遇到的真实需求 / Suggest an improvement
+title: "[Idea] "
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: 你在什么场景遇到不方便？ / What gets in your way?
+      description: 从实际使用场景开始，不用提供私人内容 / Start with a real use case; no private content needed
+    validations:
+      required: true
+  - type: textarea
+    id: improvement
+    attributes:
+      label: 希望怎么改善？ / What would help?
+      description: 可以描述希望的交互、结果或已有工具的做法 / Describe the interaction, result or an example from another tool
+    validations:
+      required: true

@@ -19,6 +19,8 @@ namespace LightTranslate {
  }
  internal sealed class PreparedUpdate { internal string Package,Work; }
  internal static class AppUpdates {
+  // GitHub repository IDs survive renames. The release response comes from this fixed repository.
+  internal const string LatestApi="https://api.github.com/repositories/1404583974/releases/latest";
   internal const string LatestPage="https://github.com/gary1110086/dafeiyi/releases/latest";
   static readonly string[] ProgramFiles={"轻译.exe","轻译.exe.config","setup.ps1","update-install.ps1","README.md","README.en.md","LICENSE","THIRD_PARTY_NOTICES.md","SECURITY.md","安装到桌面.cmd","安装并开机启动.cmd","distribution-manifest.json"};
   internal static bool AllowedFile(string relative) {
@@ -49,11 +51,18 @@ namespace LightTranslate {
   }
   internal static async Task<ReleaseUpdate> Check(CancellationToken token) {
    ServicePointManager.SecurityProtocol|=SecurityProtocolType.Tls12;
-   var data=new JavaScriptSerializer().DeserializeObject(await Text("https://api.github.com/repos/gary1110086/dafeiyi/releases/latest",1024*1024,token)) as Dictionary<string,object>;
-   if(data==null||Convert.ToBoolean(data["draft"])||Convert.ToBoolean(data["prerelease"])) throw new InvalidOperationException("未找到正式版本。");
-   string tag=Convert.ToString(data["tag_name"]); if(!Regex.IsMatch(tag,@"^v\d+\.\d+\.\d+$")) throw new InvalidOperationException("版本号格式无效。");
+   return ParseRelease(await Text(LatestApi,1024*1024,token));
+  }
+  internal static ReleaseUpdate ParseRelease(string json) {
+   var data=new JavaScriptSerializer().DeserializeObject(json) as Dictionary<string,object>;
+   if(data==null||!data.ContainsKey("draft")||!data.ContainsKey("prerelease")||!data.ContainsKey("tag_name")||!data.ContainsKey("html_url")||!data.ContainsKey("assets")||Convert.ToBoolean(data["draft"])||Convert.ToBoolean(data["prerelease"])) throw new InvalidOperationException("未找到正式版本。");
+   string tag=Convert.ToString(data["tag_name"]); Version version; if(!Regex.IsMatch(tag,@"^v\d+\.\d+\.\d+$")||!System.Version.TryParse(tag.Substring(1),out version)) throw new InvalidOperationException("版本号格式无效。");
+   string page=Convert.ToString(data["html_url"]); Uri pageUri=Trusted(page);
+   var repository=Regex.Match(page,@"^https://github\.com/gary1110086/([A-Za-z0-9_.-]+)/releases/tag/"+Regex.Escape(tag)+"$");
+   if(pageUri.Host!="github.com"||!repository.Success) throw new InvalidOperationException("更新版本来源无效。");
+   string downloadRoot="https://github.com/gary1110086/"+repository.Groups[1].Value+"/releases/download/"+tag+"/";
    var update=new ReleaseUpdate { Version=tag.Substring(1) }; var assets=data["assets"] as object[];
-   foreach(var asset in assets??new object[0]) { var row=asset as Dictionary<string,object>; if(row==null) continue; string name=Convert.ToString(row["name"]),url=Convert.ToString(row["browser_download_url"]); string expected="https://github.com/gary1110086/dafeiyi/releases/download/"+tag+"/"+name; if(url!=expected) continue; if(name==update.ArchiveName) update.ArchiveUrl=url; if(name=="SHA256SUMS.txt") update.SumsUrl=url; }
+   foreach(var asset in assets??new object[0]) { var row=asset as Dictionary<string,object>; if(row==null||!row.ContainsKey("name")||!row.ContainsKey("browser_download_url")) continue; string name=Convert.ToString(row["name"]),url=Convert.ToString(row["browser_download_url"]); if(url!=downloadRoot+name) continue; if(name==update.ArchiveName) update.ArchiveUrl=url; if(name=="SHA256SUMS.txt") update.SumsUrl=url; }
    if(update.ArchiveUrl==null||update.SumsUrl==null) throw new InvalidOperationException("正式版本的安装包或校验文件尚未就绪。"); return update;
   }
   internal static string StageArchive(string archive,string expectedHash,string work,string version) {

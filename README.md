@@ -4,7 +4,36 @@
 
 陪你读文献、查词和理解公式的 Windows 悬浮翻译工具。选中文字，点击小按钮翻译或解释；也可以选择自动翻译、剪贴板识别或只让肥鱼陪着。
 
+[**下载 Windows 版**](https://github.com/gary1110086/dafeiyi/releases/latest) · [**一分钟上手**](docs/getting-started.md) · [**问题反馈**](https://github.com/gary1110086/dafeiyi/issues/new/choose)
+
+**DeepSeek 官网账号 / API · 同一个阅读浮窗 · Markdown 与公式 · 可互动的桌面肥鱼**
+
 ![大肥译：示例桌面上的阅读浮窗和肥鱼陪伴](docs/images/desktop-companion.png)
+
+## 开始使用
+
+1. 下载 [最新版本](https://github.com/gary1110086/dafeiyi/releases/latest) 中的 **DaFeiYi-Windows-x64-v1.1.2.zip**，完整解压；不要下载 Source 源码包来直接运行。
+2. 双击 **安装到桌面.cmd**；需要开机启动，运行 **安装并开机启动.cmd**。也可以直接运行 **轻译.exe**。
+3. 在 **设置 → 连接与模型** 选择官网账号或 API。官网账号须在应用内窗口登录，检查连接后返回；Chrome 的登录不会同步。
+4. 选中一句话，点击小按钮里的「翻译 / 解释」。想先体验？**设置 → 使用指南 → 体验划词示例**，无需登录或 API。
+
+| 你想怎么用 | 选择模式 | 什么时候发送文字 |
+|---|---|---|
+| 偶尔查词，自己决定 | 点击小按钮 | 点击翻译或解释后 |
+| 连续阅读，少点一下 | 自动显示结果 | 选中并停顿后 |
+| PDF 等选区读不到 | 剪贴板自动翻译 | 复制新文字后 |
+| 只让肥鱼陪着 | 仅陪伴 | 不自动取词或翻译 |
+
+单击肥鱼切换模式，按住拖动调整位置。剪贴板模式会发送新复制的文字；复制私人内容前切回点击或陪伴模式。
+
+支持 Windows 10/11 x64、.NET Framework 4.8。官网模式需要 [Microsoft Edge WebView2 Runtime](https://developer.microsoft.com/microsoft-edge/webview2/)；较新的 Windows/Edge 通常已安装。没有 Python、Node 或 Electron 依赖。
+
+## v1.1.2：第一次用，也能顺手
+
+- **使用指南**集中提供本地体验、连接设置、模式选择与常见问题；中英文界面均可用。
+- 示例里的连接与陪伴按钮回到当前设置，不再另开一套设置；陪伴选择需保存后才应用。
+- 更新检查使用 GitHub 固定仓库 ID，改名后仍可找到同一仓库的发行文件；继续校验下载来源、SHA-256 与文件清单。
+- 如果旧版改名后无法检查更新，手动覆盖安装本版一次；登录、密钥、历史、术语和自选背景保留。
 
 ## 桌面上的肥鱼
 
@@ -26,15 +55,6 @@
 ![官网账号的回答在大肥译浮窗中显示](docs/images/preview.png)
 
 </details>
-
-## 下载与使用
-
-1. 到 [最新版本](https://github.com/gary1110086/dafeiyi/releases/latest) 下载 **DaFeiYi-Windows-x64-v1.1.1.zip**，完整解压到一个文件夹。
-2. 双击 **轻译.exe** 即可运行。想放到桌面，双击 **安装到桌面.cmd**；需要开机启动，选择 **安装并开机启动.cmd**。
-3. 设置里选择连接：**官网账号**登录自己的 DeepSeek 账号后返回浮窗，或 **API**填写自己的 API Key。
-4. 划选一段文字，点击「翻译 / 解释」。官网和 API 回答都逐步显示在同一个肥鱼浮窗。
-
-支持 Windows 10/11 x64、.NET Framework 4.8。官网模式需要 [Microsoft Edge WebView2 Runtime](https://developer.microsoft.com/microsoft-edge/webview2/)；较新的 Windows/Edge 通常已安装。没有 Python、Node 或 Electron 依赖。
 
 ## v1.1.1：模式入口与登录路径
 

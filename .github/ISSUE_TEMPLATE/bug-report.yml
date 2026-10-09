@@ -1,0 +1,56 @@
+name: 问题反馈 / Bug report
+description: 翻译、官网连接、界面或更新遇到问题 / Report a problem
+title: "[Bug] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        先查看 [使用指南](https://github.com/gary1110086/dafeiyi/blob/main/docs/getting-started.md)。
+        Do not include API keys, passwords, cookies, personal settings or private text. Crop and redact screenshots before attaching them.
+        不要提交 API Key、密码、Cookie、个人设置或私人原文；截图请先裁剪并遮挡隐私。
+  - type: input
+    id: version
+    attributes:
+      label: 应用版本 / App version
+      description: 设置 → 更新与关于 / Settings → Updates & about
+      placeholder: "例如 / e.g. 1.1.2"
+    validations:
+      required: true
+  - type: dropdown
+    id: provider
+    attributes:
+      label: 连接方式 / Provider
+      options:
+        - 官网账号 / Website account
+        - DeepSeek API
+        - 仅陪伴或与连接无关 / Companion or unrelated
+    validations:
+      required: true
+  - type: dropdown
+    id: mode
+    attributes:
+      label: 使用模式 / Mode
+      options:
+        - 点击 / Button
+        - 自动 / Automatic
+        - 剪贴板 / Clipboard
+        - 仅陪伴 / Companion
+  - type: input
+    id: environment
+    attributes:
+      label: 系统与来源软件 / Windows and source app
+      placeholder: "Windows 11 / Obsidian PDF"
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤 / Steps to reproduce
+      description: 描述操作和预期行为；无需粘贴私人内容 / Describe actions and expected behavior; no private text needed
+    validations:
+      required: true
+  - type: textarea
+    id: error
+    attributes:
+      label: 实际结果与错误提示 / Actual result and error
+      description: 官网问题可附应用导出的连接诊断；不要附浏览器存储、Cookie 或 settings.json / App-exported diagnostics are optional; no browser storage, cookies or settings.json
+    validations:
+      required: true
